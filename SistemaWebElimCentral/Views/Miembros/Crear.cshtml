@@ -1,0 +1,676 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model SistemaWebElimCentral.Models.Membresias.Mdl_Miembro
+@{
+    ViewData["Title"] = "Nuevo Miembro";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-regresar {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-regresar:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+    .seccion-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+    .seccion-header {
+        background: var(--crema);
+        padding: 12px 20px;
+        border-left: 4px solid var(--dorado);
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .seccion-body {
+        padding: 20px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--morado-oscuro);
+        margin-bottom: 5px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        font-size: 13px;
+        border-color: #dee2e6;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--dorado);
+            box-shadow: 0 0 0 0.2rem rgba(201, 168, 76, 0.25);
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .form-control.is-valid {
+            border-color: #198754;
+        }
+
+    .foto-preview-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .foto-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--dorado);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+    .foto-placeholder-grande {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid var(--dorado);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+        .foto-placeholder-grande i {
+            font-size: 60px;
+            color: rgba(255,255,255,0.5);
+        }
+
+    .btn-guardar {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+        .btn-guardar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.4);
+        }
+
+    .btn-cancelar {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        border: 1px solid #dee2e6;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+        .btn-cancelar:hover {
+            background: #e9e4f0;
+            color: var(--morado-oscuro);
+        }
+
+    .campo-requerido::after {
+        content: ' *';
+        color: red;
+    }
+
+    .campo-info {
+        font-size: 11px;
+        color: #888;
+        margin-top: 3px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .contador-campo {
+        font-size: 11px;
+        color: #888;
+        text-align: right;
+        margin-top: 3px;
+    }
+
+        .contador-campo.completo {
+            color: #198754;
+            font-weight: 700;
+        }
+
+        .contador-campo.incompleto {
+            color: #dc3545;
+        }
+</style>
+
+@* Encabezado *@
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-person-plus-fill me-2"></i>Nuevo Miembro
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Complete todos los campos requeridos para registrar al nuevo miembro
+        </small>
+    </div>
+    <a href="/Miembros" class="btn-regresar">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<form method="post"
+      action="/Miembros/Crear"
+      enctype="multipart/form-data"
+      id="formCrearMiembro"
+      novalidate>
+
+    <div class="row g-4">
+
+        <div class="col-lg-3">
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <i class="bi bi-camera-fill"></i> Fotograf&iacute;a
+                </div>
+                <div class="seccion-body">
+                    <div class="foto-preview-container">
+                        <div class="foto-placeholder-grande" id="fotoPlaceholder">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <img id="fotoPreview"
+                             class="foto-preview"
+                             style="display:none;"
+                             alt="Vista previa" />
+                        <input type="file"
+                               name="fFoto"
+                               id="inputFoto"
+                               accept="image/jpeg, image/png"
+                               class="form-control"
+                               onchange="previsualizarFoto(this)"
+                               style="font-size: 12px;" />
+                        <small class="text-muted text-center" style="font-size: 11px;">
+                            Formatos: JPG, PNG. M&aacute;ximo 5MB
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <i class="bi bi-person-badge-fill"></i> Datos Personales
+                </div>
+                <div class="seccion-body">
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">DPI</label>
+                            <input type="text"
+                                   name="sPk_Dpi_Miembro"
+                                   id="inputDpi"
+                                   class="form-control"
+                                   placeholder="13 d&iacute;gitos"
+                                   maxlength="13"
+                                   oninput="soloNumeros(this); contarCaracteres(this, 'contadorDpi', 13)"
+                                   required />
+                            <div class="d-flex justify-content-between">
+                                <span class="campo-info">
+                                    <i class="bi bi-info-circle"></i>
+                                    Solo n&uacute;meros, exactamente 13 d&iacute;gitos
+                                </span>
+                                <span class="contador-campo" id="contadorDpi">0/13</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Primer Nombre</label>
+                            <input type="text"
+                                   name="sCmp_Primer_Nombre_Miembro"
+                                   class="form-control"
+                                   placeholder="Primer nombre"
+                                   maxlength="100"
+                                   oninput="soloLetras(this)"
+                                   required />
+                            <span class="campo-info">
+                                <i class="bi bi-info-circle"></i> Solo letras
+                            </span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Segundo Nombre</label>
+                            <input type="text"
+                                   name="sCmp_Segundo_Nombre_Miembro"
+                                   class="form-control"
+                                   placeholder="Segundo nombre"
+                                   maxlength="100"
+                                   oninput="soloLetras(this)" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Primer Apellido</label>
+                            <input type="text"
+                                   name="sCmp_Primer_Apellido_Miembro"
+                                   class="form-control"
+                                   placeholder="Primer apellido"
+                                   maxlength="100"
+                                   oninput="soloLetras(this)"
+                                   required />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Segundo Apellido</label>
+                            <input type="text"
+                                   name="sCmp_Segundo_Apellido_Miembro"
+                                   class="form-control"
+                                   placeholder="Segundo apellido"
+                                   maxlength="100"
+                                   oninput="soloLetras(this)" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Fecha de Nacimiento</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Nacimiento_Miembro"
+                                   id="inputFechaNacimiento"
+                                   class="form-control"
+                                   max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   onchange="validarFecha(this)"
+                                   required />
+                            <span class="campo-info" id="edadCalculada"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label campo-requerido">Sexo</label>
+                            <select name="sCmp_Sexo_Miembro" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Estado Civil</label>
+                            <select name="sCmp_Estado_Civil_Miembro" class="form-select">
+                                <option value="">Seleccione</option>
+                                <option value="Soltero">Soltero/a</option>
+                                <option value="Casado">Casado/a</option>
+                                <option value="Divorciado">Divorciado/a</option>
+                                <option value="Viudo">Viudo/a</option>
+                                <option value="Unido">Unido/a</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Tel&eacute;fono</label>
+                            <input type="text"
+                                   name="sCmp_Telefono_Miembro"
+                                   id="inputTelefono"
+                                   class="form-control"
+                                   placeholder="8 d&iacute;gitos"
+                                   maxlength="8"
+                                   oninput="soloNumeros(this); contarCaracteres(this, 'contadorTel', 8)" />
+                            <div class="d-flex justify-content-between">
+                                <span class="campo-info">
+                                    <i class="bi bi-info-circle"></i>
+                                    Solo n&uacute;meros, exactamente 8 d&iacute;gitos
+                                </span>
+                                <span class="contador-campo" id="contadorTel">0/8</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Correo Electr&oacute;nico</label>
+                            <input type="text"
+                                   name="sCmp_Correo_Miembro"
+                                   id="inputCorreo"
+                                   class="form-control"
+                                   placeholder="correo@gmail.com"
+                                   maxlength="100"
+                                   oninput="validarCorreoTiempo(this)"
+                                   onblur="validarCorreoFinal(this)" />
+                            <span class="campo-info" id="mensajeCorreo"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Direcci&oacute;n de Residencia</label>
+                            <input type="text"
+                                   name="sCmp_Direccion_Miembro"
+                                   class="form-control"
+                                   placeholder="Direcci&oacute;n completa"
+                                   maxlength="255" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Profesi&oacute;n</label>
+                            <input type="text"
+                                   name="sCmp_Profesion_Miembro"
+                                   class="form-control"
+                                   placeholder="Profesi&oacute;n u ocupaci&oacute;n"
+                                   maxlength="100" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Empresa</label>
+                            <input type="text"
+                                   name="sCmp_Empresa_Miembro"
+                                   class="form-control"
+                                   placeholder="Empresa donde trabaja"
+                                   maxlength="100" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <i class="bi bi-heart-fill"></i> Datos Espirituales
+                </div>
+                <div class="seccion-body">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Iglesia de Conversi&oacute;n</label>
+                            <input type="text"
+                                   name="sCmp_Iglesia_Conversion_Miembro"
+                                   class="form-control"
+                                   placeholder="Iglesia donde se convirti&oacute;"
+                                   maxlength="150" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha de Conversi&oacute;n</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Conversion_Miembro"
+                                   class="form-control"
+                                   max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha de Membres&iacute;a</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Membresia_Miembro"
+                                   class="form-control"
+                                   max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Iglesia de Bautismo</label>
+                            <input type="text"
+                                   name="sCmp_Iglesia_Bautismo_Miembro"
+                                   class="form-control"
+                                   placeholder="Iglesia donde se bautiz&oacute;"
+                                   maxlength="150" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha Bautismo en Agua</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Bautismo_Agua_Miembro"
+                                   class="form-control"
+                                   max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha Bautismo en Esp&iacute;ritu</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Bautismo_Espiritu_Miembro"
+                                   class="form-control"
+                                   max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">&Aacute;rea de Servicio</label>
+                            <select name="iFk_Id_Area" class="form-select">
+                                <option value="">Sin &aacute;rea asignada</option>
+                                @foreach (var area in (SelectList)ViewBag.Areas)
+                                {
+                                    <option value="@area.Value">@area.Text</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Privilegio</label>
+                            <select name="sCmp_Privilegio_Miembro" class="form-select">
+                                <option value="">Sin privilegio</option>
+                                <option value="Anciano">Anciano</option>
+                                <option value="Diacono">Di&aacute;cono</option>
+                                <option value="Pastor">Pastor</option>
+                                <option value="Evangelista">Evangelista</option>
+                                <option value="Lider de celula">L&iacute;der de c&eacute;lula</option>
+                                <option value="Miembro activo">Miembro activo</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3 justify-content-end">
+                <a href="/Miembros" class="btn-cancelar">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </a>
+                <button type="submit"
+                        class="btn-guardar"
+                        onclick="return validarFormulario()">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Guardar Miembro
+                </button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function soloNumeros(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+        function soloLetras(input) {
+            input.value = input.value.replace(/[^a-zA-Z\u00e1\u00e9\u00ed\u00f3\u00fa\u00c1\u00c9\u00cd\u00d3\u00da\u00fc\u00dc\u00f1\u00d1\s]/g, '');
+        }
+
+        function contarCaracteres(input, idContador, total) {
+            const contador = document.getElementById(idContador);
+            const actual = input.value.length;
+            contador.textContent = actual + '/' + total;
+            if (actual === total) {
+                contador.className = 'contador-campo completo';
+            } else if (actual > 0) {
+                contador.className = 'contador-campo incompleto';
+            } else {
+                contador.className = 'contador-campo';
+            }
+        }
+
+        function validarFecha(input) {
+            const fecha = new Date(input.value);
+            const hoy = new Date();
+            const edad = Math.floor((hoy - fecha) / (365.25 * 24 * 60 * 60 * 1000));
+            const span = document.getElementById('edadCalculada');
+            if (fecha > hoy) {
+                input.classList.add('is-invalid');
+                span.innerHTML = '<span style="color:red;">La fecha no puede ser futura</span>';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                span.innerHTML = '<i class="bi bi-check-circle" style="color:#198754;"></i> Edad: ' + edad + ' a\u00f1os';
+            }
+        }
+
+        function validarCorreoTiempo(input) {
+            const span = document.getElementById('mensajeCorreo');
+            if (input.value === '') {
+                span.innerHTML = '';
+                input.classList.remove('is-invalid', 'is-valid');
+                return;
+            }
+            const dominiosPermitidos = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
+            const partes = input.value.split('@@');
+            if (partes.length === 2) {
+                const dominio = partes[1].toLowerCase();
+                if (dominiosPermitidos.indexOf(dominio) !== -1) {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
+                    span.innerHTML = '<span style="color:#198754; font-size:11px;"><i class="bi bi-check-circle"></i> Correo v\u00e1lido</span>';
+                } else {
+                    input.classList.remove('is-valid');
+                }
+            }
+        }
+
+        function validarCorreoFinal(input) {
+            const span = document.getElementById('mensajeCorreo');
+            if (input.value === '') {
+                span.innerHTML = '';
+                input.classList.remove('is-invalid', 'is-valid');
+                return;
+            }
+            const dominiosPermitidos = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
+            const partes = input.value.split('@@');
+            if (partes.length !== 2 || partes[0] === '' || partes[1] === '') {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                span.innerHTML = '<span style="color:red; font-size:11px;"><i class="bi bi-x-circle"></i> Formato inv\u00e1lido</span>';
+                return;
+            }
+            const dominio = partes[1].toLowerCase();
+            if (dominiosPermitidos.indexOf(dominio) === -1) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                span.innerHTML = '<span style="color:red; font-size:11px;"><i class="bi bi-x-circle"></i> Solo se permiten: gmail, hotmail, outlook, yahoo, icloud</span>';
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                span.innerHTML = '<span style="color:#198754; font-size:11px;"><i class="bi bi-check-circle"></i> Correo v\u00e1lido</span>';
+            }
+        }
+
+        function previsualizarFoto(input) {
+            if (input.files && input.files[0]) {
+                const archivo = input.files[0];
+                if (archivo.size > 5 * 1024 * 1024) {
+                    alert('La imagen no puede superar los 5MB.');
+                    input.value = '';
+                    return;
+                }
+                const tiposPermitidos = ['image/jpeg', 'image/png'];
+                if (tiposPermitidos.indexOf(archivo.type) === -1) {
+                    alert('Solo se permiten im\u00e1genes JPG o PNG.');
+                    input.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('fotoPreview').src = e.target.result;
+                    document.getElementById('fotoPreview').style.display = 'block';
+                    document.getElementById('fotoPlaceholder').style.display = 'none';
+                }
+                reader.readAsDataURL(archivo);
+            }
+        }
+
+        function validarFormulario() {
+            const dpi = document.getElementById('inputDpi').value;
+            const telefono = document.getElementById('inputTelefono').value;
+            const correo = document.getElementById('inputCorreo').value;
+            const dominiosPermitidos = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
+
+            if (dpi.length !== 13) {
+                alert('El DPI debe tener exactamente 13 d\u00edgitos.');
+                document.getElementById('inputDpi').focus();
+                return false;
+            }
+
+            if (telefono.length > 0 && telefono.length !== 8) {
+                alert('El tel\u00e9fono debe tener exactamente 8 d\u00edgitos.');
+                document.getElementById('inputTelefono').focus();
+                return false;
+            }
+
+            if (correo.length > 0) {
+                const partes = correo.split('@@');
+                if (partes.length !== 2 || dominiosPermitidos.indexOf(partes[1].toLowerCase()) === -1) {
+                    alert('El correo debe ser de un dominio v\u00e1lido: gmail.com, hotmail.com, outlook.com, yahoo.com o icloud.com');
+                    document.getElementById('inputCorreo').focus();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    </script>
+}

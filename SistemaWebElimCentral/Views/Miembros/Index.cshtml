@@ -1,0 +1,433 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model IEnumerable<SistemaWebElimCentral.Models.Membresias.Mdl_Miembro>
+@{
+    ViewData["Title"] = "Miembros";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-nuevo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4);
+            color: var(--morado-oscuro);
+        }
+
+    .filtros-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        border-left: 4px solid var(--dorado);
+    }
+
+    .filtros-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        margin-bottom: 15px;
+    }
+
+    .tabla-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .tabla-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tabla-miembros {
+        width: 100%;
+        margin: 0;
+    }
+
+        .tabla-miembros thead th {
+            background: var(--crema);
+            color: var(--morado-oscuro);
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            padding: 12px 15px;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .tabla-miembros tbody td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .tabla-miembros tbody tr:hover {
+            background: #faf8ff;
+        }
+
+    .foto-miembro {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--dorado);
+    }
+
+    .foto-placeholder {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        border: 2px solid var(--dorado);
+    }
+
+    .badge-activo {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-inactivo {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .btn-accion {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-ver {
+        background: #e8f4fd;
+        color: #0d6efd;
+    }
+
+        .btn-ver:hover {
+            background: #0d6efd;
+            color: white;
+        }
+
+    .btn-editar {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+        .btn-editar:hover {
+            background: #ffc107;
+            color: white;
+        }
+
+    .btn-constancia {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+        .btn-constancia:hover {
+            background: #198754;
+            color: white;
+        }
+
+    .sin-resultados {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+        .sin-resultados i {
+            font-size: 50px;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+    .contador-resultados {
+        font-size: 12px;
+        color: var(--dorado-claro);
+    }
+</style>
+
+@* Encabezado *@
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-people-fill me-2"></i>Gesti&oacute;n de Miembros
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Registro y administraci&oacute;n de miembros de la congregaci&oacute;n
+        </small>
+    </div>
+    @if (ViewBag.PuedeCrear == true)
+    {
+        <a href="/Miembros/Crear" class="btn-nuevo">
+            <i class="bi bi-person-plus-fill"></i>
+            Nuevo Miembro
+        </a>
+    }
+</div>
+
+@* Mensajes *@
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Filtros *@
+<div class="filtros-card">
+    <p class="filtros-titulo">
+        <i class="bi bi-funnel-fill me-2"></i>Filtros de B&uacute;squeda
+    </p>
+    <form method="get" action="/Miembros">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <input type="text"
+                       name="sBuscar"
+                       class="form-control"
+                       placeholder="Buscar por nombre, apellido o DPI..."
+                       value="@ViewBag.Buscar"
+                       style="border-radius: 8px; font-size: 13px;" />
+            </div>
+            <div class="col-md-3">
+                <select name="iIdArea"
+                        class="form-select"
+                        style="border-radius: 8px; font-size: 13px;">
+                    <option value="0">Todas las &aacute;reas</option>
+                    @foreach (var area in (SelectList)ViewBag.Areas)
+                    {
+                        <option value="@area.Value"
+                                selected="@(area.Value == ViewBag.IdArea.ToString())">
+                            @area.Text
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="sSexo"
+                        class="form-select"
+                        style="border-radius: 8px; font-size: 13px;">
+                    <option value="">Todos</option>
+                    <option value="M" selected="@(ViewBag.Sexo == "M")">Masculino</option>
+                    <option value="F" selected="@(ViewBag.Sexo == "F")">Femenino</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="d-flex gap-2">
+                    <button type="submit"
+                            class="btn w-100"
+                            style="background: var(--morado-medio); color: white;
+                        border-radius: 8px; font-size: 13px; font-weight: 600;">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a href="/Miembros"
+                       class="btn"
+                       style="background: var(--crema); color: var(--morado-oscuro);
+                        border-radius: 8px; font-size: 13px;">
+                        <i class="bi bi-x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@* Tabla *@
+<div class="tabla-card">
+    <div class="tabla-header">
+        <span><i class="bi bi-table me-2"></i>Listado de Miembros</span>
+        <span class="contador-resultados">
+            <i class="bi bi-person-check me-1"></i>
+            @Model.Count() miembro(s) encontrado(s)
+        </span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="tabla-miembros table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>DPI</th>
+                        <th>Nombre Completo</th>
+                        <th>Tel&eacute;fono</th>
+                        <th>&Aacute;rea de Servicio</th>
+                        <th>Sexo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var miembro in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(miembro.sCmp_Foto_Miembro))
+                                {
+                                    <img src="@miembro.sCmp_Foto_Miembro"
+                                         class="foto-miembro"
+                                         alt="Foto" />
+                                }
+                                else
+                                {
+                                    <div class="foto-placeholder">
+                                        @miembro.sCmp_Primer_Nombre_Miembro.Substring(0, 1).ToUpper()
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                <strong style="color: var(--morado-oscuro);">
+                                    @miembro.sPk_Dpi_Miembro
+                                </strong>
+                            </td>
+                            <td>
+                                @miembro.sCmp_Primer_Nombre_Miembro
+                                @miembro.sCmp_Segundo_Nombre_Miembro
+                                @miembro.sCmp_Primer_Apellido_Miembro
+                                @miembro.sCmp_Segundo_Apellido_Miembro
+                            </td>
+                            <td>@miembro.sCmp_Telefono_Miembro</td>
+                            <td>@(miembro.Area?.sCmp_Nombre_Area ?? "Sin &aacute;rea")</td>
+                            <td>
+                                @(miembro.sCmp_Sexo_Miembro == "M" ? "Masculino" : "Femenino")
+                            </td>
+                            <td>
+                                @if (miembro.bCmp_Estado_Miembro)
+                                {
+                                    <span class="badge-activo">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-inactivo">Inactivo</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    @if (ViewBag.PuedeCrear == true)
+                                    {
+                                        <a href="/Miembros/Detalle/@miembro.sPk_Dpi_Miembro"
+                                           class="btn-accion btn-ver"
+                                           title="Ver detalle">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                    }
+                                    @if (ViewBag.PuedeEditar == true)
+                                    {
+                                        <a href="/Miembros/Editar/@miembro.sPk_Dpi_Miembro"
+                                           class="btn-accion btn-editar"
+                                           title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    }
+                                    @if (ViewBag.PuedeImprimir == true)
+                                    {
+                                        <a href="/Constancias/Generar/@miembro.sPk_Dpi_Miembro"
+                                           class="btn-accion btn-constancia"
+                                           title="Generar constancia">
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="sin-resultados">
+            <i class="bi bi-person-x"></i>
+            <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
+                No se encontraron miembros
+            </p>
+            <small>Intenta con otros filtros o registra un nuevo miembro</small>
+        </div>
+    }
+</div>

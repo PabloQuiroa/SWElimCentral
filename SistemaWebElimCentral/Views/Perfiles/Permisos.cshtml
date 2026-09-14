@@ -1,0 +1,315 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@{
+    ViewData["Title"] = "Permisos";
+    var gPerfil = ViewBag.Perfil as SistemaWebElimCentral.Models.Seguridad.Mdl_Perfil;
+    var gAplicaciones = ViewBag.Aplicaciones as List<SistemaWebElimCentral.Models.Seguridad.Mdl_Aplicacion>;
+    var gPermisos = ViewBag.Permisos as List<SistemaWebElimCentral.Models.Seguridad.Mdl_Permiso_Perfil_Aplicacion>;
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-regresar {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-regresar:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+    .permisos-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+    .permisos-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .tabla-permisos thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border: none;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+        .tabla-permisos thead th:first-child {
+            text-align: left;
+        }
+
+    .tabla-permisos tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 13px;
+        text-align: center;
+    }
+
+        .tabla-permisos tbody td:first-child {
+            text-align: left;
+        }
+
+    .tabla-permisos tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    .modulo-nombre {
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .check-permiso {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--morado-oscuro);
+    }
+
+    .btn-guardar {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+        .btn-guardar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.4);
+        }
+
+    .btn-todos {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        border: 1px solid var(--dorado);
+        padding: 6px 15px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+        .btn-todos:hover {
+            background: var(--dorado);
+            color: var(--morado-oscuro);
+        }
+
+    .perfil-info {
+        background: var(--crema);
+        border-radius: 10px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--dorado);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .perfil-info-icono {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-sliders me-2"></i>Configurar Permisos
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Defina los accesos para el perfil seleccionado
+        </small>
+    </div>
+    <a href="/Perfiles" class="btn-regresar">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Info del perfil *@
+<div class="perfil-info">
+    <div class="perfil-info-icono">
+        <i class="bi bi-shield-fill"></i>
+    </div>
+    <div>
+        <div style="font-family: 'Cinzel', serif; font-weight: 700; color: var(--morado-oscuro); font-size: 15px;">
+            @gPerfil.sCmp_Nombre_Perfil
+        </div>
+        <div style="font-size: 12px; color: #888;">
+            @(string.IsNullOrEmpty(gPerfil.sCmp_Descripcion_Perfil)
+                ? "Sin descripci&oacute;n" : gPerfil.sCmp_Descripcion_Perfil)
+        </div>
+    </div>
+    <div class="ms-auto d-flex gap-2">
+        <button type="button" class="btn-todos" onclick="marcarTodos(true)">
+            <i class="bi bi-check-all me-1"></i>Marcar todos
+        </button>
+        <button type="button" class="btn-todos" onclick="marcarTodos(false)">
+            <i class="bi bi-x-lg me-1"></i>Desmarcar todos
+        </button>
+    </div>
+</div>
+
+<form method="post" action="/Perfiles/GuardarPermisos">
+    <input type="hidden" name="iIdPerfil" value="@gPerfil.iPk_Id_Perfil" />
+
+    <div class="permisos-card">
+        <div class="permisos-header">
+            <i class="bi bi-grid-3x3-gap-fill me-2"></i>
+            M&oacute;dulos y Permisos del Sistema
+        </div>
+
+        <div class="table-responsive">
+            <table class="tabla-permisos table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 200px;">M&oacute;dulo</th>
+                        <th>Ingresar</th>
+                        <th>Consultar</th>
+                        <th>Modificar</th>
+                        <th>Eliminar</th>
+                        <th>Imprimir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var app in gAplicaciones)
+                    {
+                        var permiso = gPermisos?.FirstOrDefault(p =>
+                            p.iFk_Id_Aplicacion == app.iPk_Id_Aplicacion);
+
+                        <tr>
+                            <td>
+                                <div class="modulo-nombre">
+                                    <i class="bi bi-@(app.sCmp_Icono_Aplicacion ?? "app")"
+                                       style="color: var(--dorado);"></i>
+                                    @app.sCmp_Nombre_Aplicacion
+                                </div>
+                            </td>
+                            <td>
+                                <input type="checkbox"
+                                       class="check-permiso check-all"
+                                       name="ingresar_@app.iPk_Id_Aplicacion"
+                                @(permiso != null && permiso.bCmp_Ingresar_Permiso ? "checked" : "") />
+                            </td>
+                            <td>
+                                <input type="checkbox"
+                                       class="check-permiso check-all"
+                                       name="consultar_@app.iPk_Id_Aplicacion"
+                                @(permiso != null && permiso.bCmp_Consultar_Permiso ? "checked" : "") />
+                            </td>
+                            <td>
+                                <input type="checkbox"
+                                       class="check-permiso check-all"
+                                       name="modificar_@app.iPk_Id_Aplicacion"
+                                @(permiso != null && permiso.bCmp_Modificar_Permiso ? "checked" : "") />
+                            </td>
+                            <td>
+                                <input type="checkbox"
+                                       class="check-permiso check-all"
+                                       name="eliminar_@app.iPk_Id_Aplicacion"
+                                @(permiso != null && permiso.bCmp_Eliminar_Permiso ? "checked" : "") />
+                            </td>
+                            <td>
+                                <input type="checkbox"
+                                       class="check-permiso check-all"
+                                       name="imprimir_@app.iPk_Id_Aplicacion"
+                                @(permiso != null && permiso.bCmp_Imprimir_Permiso ? "checked" : "") />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn-guardar">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            Guardar Permisos
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function marcarTodos(estado) {
+            const checkboxes = document.querySelectorAll('.check-all');
+            checkboxes.forEach(cb => cb.checked = estado);
+        }
+    </script>
+}

@@ -1,0 +1,382 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@{
+    ViewData["Title"] = "Nuevo Usuario";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-regresar {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-regresar:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+    .seccion-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+    .seccion-header {
+        background: var(--crema);
+        padding: 12px 20px;
+        border-left: 4px solid var(--dorado);
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .seccion-body {
+        padding: 20px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--morado-oscuro);
+        margin-bottom: 5px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        font-size: 13px;
+        border-color: #dee2e6;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--dorado);
+            box-shadow: 0 0 0 0.2rem rgba(201, 168, 76, 0.25);
+        }
+
+    .btn-guardar {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 700;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+        .btn-guardar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.4);
+        }
+
+    .btn-cancelar {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        border: 1px solid #dee2e6;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+        .btn-cancelar:hover {
+            background: #e9e4f0;
+            color: var(--morado-oscuro);
+        }
+
+    .campo-requerido::after {
+        content: ' *';
+        color: red;
+    }
+
+    .requisitos-contrasena {
+        background: var(--crema);
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .requisito {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 3px;
+        color: #999;
+    }
+
+        .requisito.cumplido {
+            color: #198754;
+        }
+
+            .requisito.cumplido i {
+                color: #198754;
+            }
+</style>
+
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-person-plus-fill me-2"></i>Nuevo Usuario
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Complete los datos para crear un nuevo usuario del sistema
+        </small>
+    </div>
+    <a href="/Usuarios" class="btn-regresar">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<form method="post" action="/Usuarios/Crear" id="formCrearUsuario">
+    <div class="seccion-card">
+        <div class="seccion-header">
+            <i class="bi bi-person-badge-fill"></i> Datos del Usuario
+        </div>
+        <div class="seccion-body">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label campo-requerido">Nombre Completo</label>
+                    <input type="text"
+                           name="sNombreUsuario"
+                           class="form-control"
+                           placeholder="Nombre completo del usuario"
+                           maxlength="100"
+                           required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label campo-requerido">Nombre de Usuario</label>
+                    <div class="input-group">
+                        <span class="input-group-text"
+                              style="background: var(--crema); color: var(--morado-oscuro); font-weight: 700;">
+                            @@
+                        </span>
+                        <input type="text"
+                               name="sUsername"
+                               id="inputUsername"
+                               class="form-control"
+                               placeholder="username"
+                               maxlength="50"
+                               oninput="this.value = this.value.replace(/[^a-z0-9._]/g, '').toLowerCase()"
+                               required />
+                    </div>
+                    <small class="text-muted" style="font-size: 11px;">
+                        Solo letras min&uacute;sculas, n&uacute;meros, puntos y guiones bajos
+                    </small>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Correo Electr&oacute;nico</label>
+                    <input type="email"
+                           name="sCorreo"
+                           class="form-control"
+                           placeholder="correo@ejemplo.com"
+                           maxlength="100" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label campo-requerido">Perfil</label>
+                    <select name="iIdPerfil" class="form-select" required>
+                        <option value="">Seleccione un perfil</option>
+                        @foreach (var perfil in (SelectList)ViewBag.Perfiles)
+                        {
+                            <option value="@perfil.Value">@perfil.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label campo-requerido">Contrase&ntilde;a</label>
+                    <div class="input-group">
+                        <input type="password"
+                               name="sContrasena"
+                               id="inputContrasena"
+                               class="form-control"
+                               placeholder="M&iacute;nimo 8 caracteres"
+                               oninput="verificarContrasena(this)"
+                               required />
+                        <button class="btn btn-outline-secondary"
+                                type="button"
+                                onclick="togglePassword('inputContrasena', 'ojoContrasena')">
+                            <i class="bi bi-eye" id="ojoContrasena"></i>
+                        </button>
+                    </div>
+                    <div class="requisitos-contrasena" id="requisitos">
+                        <div class="requisito" id="req-longitud">
+                            <i class="bi bi-x-circle"></i> M&iacute;nimo 8 caracteres
+                        </div>
+                        <div class="requisito" id="req-mayuscula">
+                            <i class="bi bi-x-circle"></i> Al menos una may&uacute;scula
+                        </div>
+                        <div class="requisito" id="req-numero">
+                            <i class="bi bi-x-circle"></i> Al menos un n&uacute;mero
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label campo-requerido">Confirmar Contrase&ntilde;a</label>
+                    <div class="input-group">
+                        <input type="password"
+                               name="sConfirmarContrasena"
+                               id="inputConfirmar"
+                               class="form-control"
+                               placeholder="Repita la contrase&ntilde;a"
+                               oninput="verificarCoincidencia()"
+                               required />
+                        <button class="btn btn-outline-secondary"
+                                type="button"
+                                onclick="togglePassword('inputConfirmar', 'ojoConfirmar')">
+                            <i class="bi bi-eye" id="ojoConfirmar"></i>
+                        </button>
+                    </div>
+                    <small id="mensajeCoincidencia" style="font-size: 11px;"></small>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3 justify-content-end">
+        <a href="/Usuarios" class="btn-cancelar">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
+        <button type="submit"
+                class="btn-guardar"
+                onclick="return validarFormulario()">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            Crear Usuario
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        function verificarContrasena(input) {
+            const val = input.value;
+            actualizarRequisito('req-longitud', val.length >= 8);
+            actualizarRequisito('req-mayuscula', /[A-Z]/.test(val));
+            actualizarRequisito('req-numero', /[0-9]/.test(val));
+            verificarCoincidencia();
+        }
+
+        function actualizarRequisito(id, cumplido) {
+            const el = document.getElementById(id);
+            if (cumplido) {
+                el.classList.add('cumplido');
+                el.querySelector('i').className = 'bi bi-check-circle-fill';
+            } else {
+                el.classList.remove('cumplido');
+                el.querySelector('i').className = 'bi bi-x-circle';
+            }
+        }
+
+        function verificarCoincidencia() {
+            const c1 = document.getElementById('inputContrasena').value;
+            const c2 = document.getElementById('inputConfirmar').value;
+            const msg = document.getElementById('mensajeCoincidencia');
+            if (c2 === '') {
+                msg.innerHTML = '';
+                return;
+            }
+            if (c1 === c2) {
+                msg.innerHTML = '<span style="color:#198754;"><i class="bi bi-check-circle"></i> Las contrase&ntilde;as coinciden</span>';
+            } else {
+                msg.innerHTML = '<span style="color:red;"><i class="bi bi-x-circle"></i> Las contrase&ntilde;as no coinciden</span>';
+            }
+        }
+
+        function validarFormulario() {
+            const contrasena = document.getElementById('inputContrasena').value;
+            const confirmar = document.getElementById('inputConfirmar').value;
+
+            if (contrasena.length < 8) {
+                alert('La contrase\u00f1a debe tener al menos 8 caracteres.');
+                return false;
+            }
+            if (!/[A-Z]/.test(contrasena)) {
+                alert('La contrase\u00f1a debe tener al menos una may\u00fascula.');
+                return false;
+            }
+            if (!/[0-9]/.test(contrasena)) {
+                alert('La contrase\u00f1a debe tener al menos un n\u00famero.');
+                return false;
+            }
+            if (contrasena !== confirmar) {
+                alert('Las contrase\u00f1as no coinciden.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

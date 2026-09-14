@@ -1,0 +1,313 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model IEnumerable<SistemaWebElimCentral.Models.Seguridad.Mdl_Bitacora>
+@{
+    ViewData["Title"] = "Bit&aacute;cora";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .filtros-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        border-left: 4px solid var(--dorado);
+    }
+
+    .filtros-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        margin-bottom: 15px;
+    }
+
+    .tabla-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .tabla-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tabla-bitacora thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border: none;
+        text-transform: uppercase;
+    }
+
+    .tabla-bitacora tbody td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 12px;
+    }
+
+    .tabla-bitacora tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    .badge-exito {
+        background: #d4edda;
+        color: #155724;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-error {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .accion-texto {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .usuario-badge {
+        background: #e8f4fd;
+        color: var(--morado-oscuro);
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid rgba(74,14,110,0.2);
+    }
+
+    .sin-resultados {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+        .sin-resultados i {
+            font-size: 50px;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        font-size: 13px;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--dorado);
+            box-shadow: 0 0 0 0.2rem rgba(201, 168, 76, 0.25);
+        }
+</style>
+
+@* Encabezado *@
+<div class="page-header">
+    <p class="page-header-titulo">
+        <i class="bi bi-journal-text me-2"></i>Bit&aacute;cora del Sistema
+    </p>
+    <small style="color: var(--dorado-claro); font-size: 12px;">
+        Registro de todas las acciones realizadas en el sistema
+    </small>
+</div>
+
+@* Filtros *@
+<div class="filtros-card">
+    <p class="filtros-titulo">
+        <i class="bi bi-funnel-fill me-2"></i>Filtros de B&uacute;squeda
+    </p>
+    <form method="get" action="/Bitacora">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
+                    Fecha Inicio
+                </label>
+                <input type="date"
+                       name="sFecha"
+                       class="form-control"
+                       value="@ViewBag.Fecha" />
+            </div>
+            <div class="col-md-3">
+                <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
+                    Fecha Fin
+                </label>
+                <input type="date"
+                       name="sFechaFin"
+                       class="form-control"
+                       value="@ViewBag.FechaFin" />
+            </div>
+            <div class="col-md-3">
+                <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
+                    Usuario
+                </label>
+                <select name="iIdUsuario" class="form-select">
+                    <option value="0">Todos los usuarios</option>
+                    @foreach (var usuario in (List<SistemaWebElimCentral.Models.Seguridad.Mdl_Usuario>)ViewBag.Usuarios)
+                    {
+                        <option value="@usuario.iPk_Id_Usuario"
+                                selected="@(ViewBag.IdUsuario == usuario.iPk_Id_Usuario)">
+                            @usuario.sCmp_Nombre_Usuario
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
+                    Buscar acci&oacute;n
+                </label>
+                <input type="text"
+                       name="sBuscar"
+                       class="form-control"
+                       placeholder="Buscar en acciones..."
+                       value="@ViewBag.Buscar" />
+            </div>
+            <div class="col-12 d-flex gap-2 justify-content-end">
+                <a href="/Bitacora"
+                   class="btn"
+                   style="background: var(--crema); color: var(--morado-oscuro);
+                    border-radius: 8px; font-size: 13px; font-weight: 600;">
+                    <i class="bi bi-x-circle me-1"></i> Limpiar
+                </a>
+                <button type="submit"
+                        class="btn"
+                        style="background: var(--morado-medio); color: white;
+                    border-radius: 8px; font-size: 13px; font-weight: 600;">
+                    <i class="bi bi-search me-1"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@* Tabla *@
+<div class="tabla-card">
+    <div class="tabla-header">
+        <span><i class="bi bi-table me-2"></i>Registros de Actividad</span>
+        <span style="font-size: 12px; color: var(--dorado-claro);">
+            @Model.Count() registro(s) — mostrando m&aacute;ximo 500
+        </span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="tabla-bitacora table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha y Hora</th>
+                        <th>Usuario</th>
+                        <th>Acci&oacute;n</th>
+                        <th>IP</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var registro in Model)
+                    {
+                        <tr>
+                            <td style="color: #999;">@registro.iPk_Id_Bitacora</td>
+                            <td>
+                                <strong style="color: var(--morado-oscuro);">
+                                    @registro.dCmp_Fecha_Bitacora.ToString("dd/MM/yyyy")
+                                </strong>
+                                <br />
+                                <small style="color: #999;">
+                                    @registro.dCmp_Fecha_Bitacora.ToString("HH:mm:ss")
+                                </small>
+                            </td>
+                            <td>
+                                @if (registro.Usuario != null)
+                                {
+                                    <span class="usuario-badge">
+                                        <i class="bi bi-person-fill me-1"></i>
+                                        @registro.Usuario.sCmp_Nombre_Usuario
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <div class="accion-texto"
+                                     title="@registro.sCmp_Accion_Bitacora">
+                                    @registro.sCmp_Accion_Bitacora
+                                </div>
+                            </td>
+                            <td>
+                                <small style="color: #999; font-family: monospace;">
+                                    @registro.sCmp_Ip_Bitacora
+                                </small>
+                            </td>
+                            <td>
+                                @if (registro.bCmp_Login_Estado_Bitacora)
+                                {
+                                    <span class="badge-exito">
+                                        <i class="bi bi-check-circle me-1"></i>OK
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge-error">
+                                        <i class="bi bi-x-circle me-1"></i>Error
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="sin-resultados">
+            <i class="bi bi-journal-x"></i>
+            <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
+                No hay registros en la bit&aacute;cora
+            </p>
+            <small>Los registros de actividad aparecer&aacute;n aqu&iacute;</small>
+        </div>
+    }
+</div>

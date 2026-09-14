@@ -1,0 +1,203 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model IEnumerable<SistemaWebElimCentral.Models.Membresias.Mdl_Constancia>
+@{
+    ViewData["Title"] = "Constancias";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .tabla-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .tabla-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tabla-constancias thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border: none;
+        text-transform: uppercase;
+    }
+
+    .tabla-constancias tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .tabla-constancias tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    .badge-emitida {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .btn-descargar {
+        background: #d1e7dd;
+        color: #0f5132;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+        .btn-descargar:hover {
+            background: #198754;
+            color: white;
+        }
+
+    .sin-resultados {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+        .sin-resultados i {
+            font-size: 50px;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            display: block;
+        }
+</style>
+
+<div class="page-header">
+    <p class="page-header-titulo">
+        <i class="bi bi-file-earmark-text-fill me-2"></i>Historial de Constancias
+    </p>
+    <small style="color: var(--dorado-claro); font-size: 12px;">
+        Registro de todas las constancias emitidas
+    </small>
+</div>
+
+<div class="tabla-card">
+    <div class="tabla-header">
+        <span><i class="bi bi-table me-2"></i>Constancias Emitidas</span>
+        <span style="font-size: 12px; color: var(--dorado-claro);">
+            @Model.Count() constancia(s) en total
+        </span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="tabla-constancias table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>DPI Miembro</th>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Fecha Emisi&oacute;n</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var constancia in Model)
+                    {
+                        <tr>
+                            <td>@constancia.iPk_Id_Constancia</td>
+                            <td>
+                                <strong style="color: var(--morado-oscuro);">
+                                    @constancia.sFk_Dpi_Miembro
+                                </strong>
+                            </td>
+                            <td>
+                                @if (constancia.Miembro != null)
+                                {
+                                    @constancia.Miembro.sCmp_Primer_Nombre_Miembro
+                                    @(" ")
+                                    @constancia.Miembro.sCmp_Primer_Apellido_Miembro
+                                }
+                            </td>
+                            <td>@constancia.sCmp_Tipo_Constancia</td>
+                            <td>
+                                @constancia.dCmp_Fecha_Emision_Constancia.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                            <td>
+                                @(constancia.dCmp_Fecha_Vencimiento_Constancia.HasValue
+                                    ? constancia.dCmp_Fecha_Vencimiento_Constancia.Value.ToString("dd/MM/yyyy")
+                                    : "N/A")
+                            </td>
+                            <td>
+                                <span class="badge-emitida">Emitida</span>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(constancia.sCmp_Ruta_Pdf_Constancia))
+                                {
+                                    <a href="@constancia.sCmp_Ruta_Pdf_Constancia"
+                                       target="_blank"
+                                       class="btn-descargar">
+                                        <i class="bi bi-file-earmark-pdf"></i> Ver PDF
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="sin-resultados">
+            <i class="bi bi-file-earmark-x"></i>
+            <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
+                No hay constancias emitidas
+            </p>
+            <small>Las constancias generadas aparecer&aacute;n aqu&iacute;</small>
+        </div>
+    }
+</div>

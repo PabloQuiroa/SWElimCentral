@@ -1,0 +1,497 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model SistemaWebElimCentral.Models.Membresias.Mdl_Miembro
+@{
+    ViewData["Title"] = "Editar Miembro";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-regresar {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-regresar:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+    .seccion-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+    .seccion-header {
+        background: var(--crema);
+        padding: 12px 20px;
+        border-left: 4px solid var(--dorado);
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .seccion-body {
+        padding: 20px;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--morado-oscuro);
+        margin-bottom: 5px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        font-size: 13px;
+        border-color: #dee2e6;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--dorado);
+            box-shadow: 0 0 0 0.2rem rgba(201, 168, 76, 0.25);
+        }
+
+        .form-control:disabled {
+            background: var(--crema);
+            color: var(--morado-oscuro);
+            font-weight: 700;
+        }
+
+    .foto-preview-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .foto-preview {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--dorado);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+    .foto-placeholder-grande {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid var(--dorado);
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+        .foto-placeholder-grande i {
+            font-size: 60px;
+            color: rgba(255,255,255,0.5);
+        }
+
+    .btn-guardar {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+    }
+
+        .btn-guardar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.4);
+        }
+
+    .btn-cancelar {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        border: 1px solid #dee2e6;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+        .btn-cancelar:hover {
+            background: #e9e4f0;
+            color: var(--morado-oscuro);
+        }
+
+    .campo-requerido::after {
+        content: ' *';
+        color: red;
+    }
+
+    .dpi-badge {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+</style>
+
+@* Encabezado *@
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-pencil-fill me-2"></i>Editar Miembro
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Actualice la información del miembro
+        </small>
+    </div>
+    <a href="/Miembros" class="btn-regresar">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+@* Mensaje de error *@
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @ViewBag.Error
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<form method="post"
+      action="/Miembros/Editar"
+      enctype="multipart/form-data">
+
+    @* Campo oculto con el DPI *@
+    <input type="hidden" name="sPk_Dpi_Miembro" value="@Model.sPk_Dpi_Miembro" />
+
+    <div class="row g-4">
+
+        @* Columna izquierda - Foto *@
+        <div class="col-lg-3">
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <i class="bi bi-camera-fill"></i> Fotografía
+                </div>
+                <div class="seccion-body">
+                    <div class="foto-preview-container">
+
+                        @if (!string.IsNullOrEmpty(Model.sCmp_Foto_Miembro))
+                        {
+                            <img id="fotoPreview"
+                                 src="@Model.sCmp_Foto_Miembro"
+                                 class="foto-preview"
+                                 alt="Foto del miembro" />
+                            <div class="foto-placeholder-grande"
+                                 id="fotoPlaceholder"
+                                 style="display:none;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="foto-placeholder-grande" id="fotoPlaceholder">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <img id="fotoPreview"
+                                 class="foto-preview"
+                                 style="display:none;"
+                                 alt="Vista previa" />
+                        }
+
+                        <input type="file"
+                               name="fFoto"
+                               id="inputFoto"
+                               accept="image/*"
+                               class="form-control"
+                               onchange="previsualizarFoto(this)"
+                               style="font-size: 12px;" />
+                        <small class="text-muted text-center" style="font-size: 11px;">
+                            Deje vacío para mantener la foto actual
+                        </small>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <div class="dato-label" style="font-size:11px; color:#999; margin-bottom:5px;">DPI</div>
+                        <span class="dpi-badge">
+                            <i class="bi bi-credit-card"></i>
+                            @Model.sPk_Dpi_Miembro
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Columna derecha - Formulario *@
+        <div class="col-lg-9">
+
+            @* Datos personales *@
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <i class="bi bi-person-badge-fill"></i> Datos Personales
+                </div>
+                <div class="seccion-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Primer Nombre</label>
+                            <input type="text"
+                                   name="sCmp_Primer_Nombre_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Primer_Nombre_Miembro"
+                                   required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Segundo Nombre</label>
+                            <input type="text"
+                                   name="sCmp_Segundo_Nombre_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Segundo_Nombre_Miembro" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Primer Apellido</label>
+                            <input type="text"
+                                   name="sCmp_Primer_Apellido_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Primer_Apellido_Miembro"
+                                   required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Segundo Apellido</label>
+                            <input type="text"
+                                   name="sCmp_Segundo_Apellido_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Segundo_Apellido_Miembro" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Fecha de Nacimiento</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Nacimiento_Miembro"
+                                   class="form-control"
+                                   value="@Model.dCmp_Fecha_Nacimiento_Miembro.ToString("yyyy-MM-dd")"
+                                   required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label campo-requerido">Sexo</label>
+                            <select name="sCmp_Sexo_Miembro" class="form-select" required>
+                                <option value="">Seleccione</option>
+                                <option value="M" selected="@(Model.sCmp_Sexo_Miembro == "M")">
+                                    Masculino
+                                </option>
+                                <option value="F" selected="@(Model.sCmp_Sexo_Miembro == "F")">
+                                    Femenino
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Estado Civil</label>
+                            <select name="sCmp_Estado_Civil_Miembro" class="form-select">
+                                <option value="">Seleccione</option>
+                                <option value="Soltero" selected="@(Model.sCmp_Estado_Civil_Miembro == "Soltero")">Soltero/a</option>
+                                <option value="Casado" selected="@(Model.sCmp_Estado_Civil_Miembro == "Casado")">Casado/a</option>
+                                <option value="Divorciado" selected="@(Model.sCmp_Estado_Civil_Miembro == "Divorciado")">Divorciado/a</option>
+                                <option value="Viudo" selected="@(Model.sCmp_Estado_Civil_Miembro == "Viudo")">Viudo/a</option>
+                                <option value="Unido" selected="@(Model.sCmp_Estado_Civil_Miembro == "Unido")">Unido/a</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text"
+                                   name="sCmp_Telefono_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Telefono_Miembro" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Correo Electrónico</label>
+                            <input type="email"
+                                   name="sCmp_Correo_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Correo_Miembro" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Dirección de Residencia</label>
+                            <input type="text"
+                                   name="sCmp_Direccion_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Direccion_Miembro" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Profesión</label>
+                            <input type="text"
+                                   name="sCmp_Profesion_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Profesion_Miembro" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Empresa</label>
+                            <input type="text"
+                                   name="sCmp_Empresa_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Empresa_Miembro" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Datos espirituales *@
+            <div class="seccion-card">
+                <div class="seccion-header">
+                    <i class="bi bi-heart-fill"></i> Datos Espirituales
+                </div>
+                <div class="seccion-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Iglesia de Conversión</label>
+                            <input type="text"
+                                   name="sCmp_Iglesia_Conversion_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Iglesia_Conversion_Miembro" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha de Conversión</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Conversion_Miembro"
+                                   class="form-control"
+                                   value="@(Model.dCmp_Fecha_Conversion_Miembro.HasValue ? Model.dCmp_Fecha_Conversion_Miembro.Value.ToString("yyyy-MM-dd") : "")" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha de Membresía</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Membresia_Miembro"
+                                   class="form-control"
+                                   value="@(Model.dCmp_Fecha_Membresia_Miembro.HasValue ? Model.dCmp_Fecha_Membresia_Miembro.Value.ToString("yyyy-MM-dd") : "")" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Iglesia de Bautismo</label>
+                            <input type="text"
+                                   name="sCmp_Iglesia_Bautismo_Miembro"
+                                   class="form-control"
+                                   value="@Model.sCmp_Iglesia_Bautismo_Miembro" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha Bautismo en Agua</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Bautismo_Agua_Miembro"
+                                   class="form-control"
+                                   value="@(Model.dCmp_Fecha_Bautismo_Agua_Miembro.HasValue ? Model.dCmp_Fecha_Bautismo_Agua_Miembro.Value.ToString("yyyy-MM-dd") : "")" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha Bautismo en Espíritu</label>
+                            <input type="date"
+                                   name="dCmp_Fecha_Bautismo_Espiritu_Miembro"
+                                   class="form-control"
+                                   value="@(Model.dCmp_Fecha_Bautismo_Espiritu_Miembro.HasValue ? Model.dCmp_Fecha_Bautismo_Espiritu_Miembro.Value.ToString("yyyy-MM-dd") : "")" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Área de Servicio</label>
+                            <select name="iFk_Id_Area" class="form-select">
+                                <option value="">Sin área asignada</option>
+                                @foreach (var area in (SelectList)ViewBag.Areas)
+                                {
+                                    <option value="@area.Value"
+                                            selected="@(Model.iFk_Id_Area.ToString() == area.Value)">
+                                        @area.Text
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Privilegio</label>
+                            <select name="sCmp_Privilegio_Miembro" class="form-select">
+                                <option value="">Sin privilegio</option>
+                                <option value="Anciano" selected="@(Model.sCmp_Privilegio_Miembro == "Anciano")">Anciano</option>
+                                <option value="Diácono" selected="@(Model.sCmp_Privilegio_Miembro == "Diácono")">Diácono</option>
+                                <option value="Pastor" selected="@(Model.sCmp_Privilegio_Miembro == "Pastor")">Pastor</option>
+                                <option value="Evangelista" selected="@(Model.sCmp_Privilegio_Miembro == "Evangelista")">Evangelista</option>
+                                <option value="Líder de célula" selected="@(Model.sCmp_Privilegio_Miembro == "Líder de célula")">Líder de célula</option>
+                                <option value="Miembro activo" selected="@(Model.sCmp_Privilegio_Miembro == "Miembro activo")">Miembro activo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Botones *@
+            <div class="d-flex gap-3 justify-content-end">
+                <a href="/Miembros" class="btn-cancelar">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-guardar">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Guardar Cambios
+                </button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function previsualizarFoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('fotoPreview').src = e.target.result;
+                    document.getElementById('fotoPreview').style.display = 'block';
+                    document.getElementById('fotoPlaceholder').style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

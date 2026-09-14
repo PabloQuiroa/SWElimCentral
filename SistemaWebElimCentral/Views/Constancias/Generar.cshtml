@@ -1,0 +1,373 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model SistemaWebElimCentral.Models.Membresias.Mdl_Miembro
+@{
+    ViewData["Title"] = "Generar Constancia";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-regresar {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+    .btn-regresar:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+    }
+
+    .preview-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .preview-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 20px;
+        text-align: center;
+        color: white;
+    }
+
+    .preview-logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 3px solid var(--dorado);
+        object-fit: contain;
+        background: white;
+        padding: 3px;
+        margin-bottom: 10px;
+    }
+
+    .preview-iglesia {
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .preview-body {
+        padding: 30px;
+    }
+
+    .preview-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        text-align: center;
+        margin-bottom: 5px;
+    }
+
+    .preview-fecha {
+        text-align: center;
+        color: #999;
+        font-size: 12px;
+        margin-bottom: 25px;
+    }
+
+    .linea-dorada {
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+        margin: 15px 0;
+        border-radius: 2px;
+    }
+
+    .preview-texto {
+        font-size: 14px;
+        line-height: 1.8;
+        color: #333;
+        text-align: justify;
+        margin-bottom: 15px;
+    }
+
+    .preview-nombre {
+        color: var(--morado-oscuro);
+        font-weight: 700;
+    }
+
+    .preview-vigencia {
+        font-size: 12px;
+        color: #999;
+        font-style: italic;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background: var(--crema);
+        border-radius: 8px;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 4px solid var(--dorado);
+    }
+
+    .info-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        margin-bottom: 15px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 13px;
+    }
+
+    .info-label {
+        color: #999;
+        font-weight: 600;
+    }
+
+    .info-valor {
+        color: var(--morado-oscuro);
+        font-weight: 700;
+    }
+
+    .btn-generar {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        width: 100%;
+        padding: 15px;
+        border-radius: 10px;
+        font-family: 'Cinzel', serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        cursor: pointer;
+    }
+
+    .btn-generar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
+    }
+</style>
+
+@* Encabezado *@
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-file-earmark-text-fill me-2"></i>Generar Constancia
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Vista previa de la constancia de membres&iacute;a
+        </small>
+    </div>
+    <a href="/Miembros" class="btn-regresar">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row g-4">
+
+    @* Vista previa *@
+    <div class="col-lg-8">
+        <div class="preview-card">
+            <div class="preview-header">
+                <img src="~/images/logo_elim_color.png"
+                     class="preview-logo"
+                     alt="Logo Elim Central" />
+                <div class="preview-iglesia">IGLESIA DE CRISTO ELIM CENTRAL</div>
+                <div style="font-size: 11px; color: var(--dorado-claro); letter-spacing: 1px;">
+                    DEPARTAMENTO DE MEMBRES&Iacute;AS
+                </div>
+            </div>
+
+            <div class="preview-body">
+                <div class="preview-titulo">CONSTANCIA DE MEMBRES&Iacute;A</div>
+                <div class="preview-fecha">
+                    Guatemala, @DateTime.Now.ToString("dd") de
+                    @DateTime.Now.ToString("MMMM") de
+                    @DateTime.Now.ToString("yyyy")
+                </div>
+
+                <div class="linea-dorada"></div>
+
+                <p class="preview-texto">
+                    <strong style="color: var(--morado-oscuro);">A QUIEN INTERESE:</strong>
+                </p>
+
+                <p class="preview-texto">
+                    Por medio de la presente se hace constar que el/la hermano/a
+                    <span class="preview-nombre">
+                        @Model.sCmp_Primer_Nombre_Miembro
+                        @Model.sCmp_Segundo_Nombre_Miembro
+                        @Model.sCmp_Primer_Apellido_Miembro
+                        @Model.sCmp_Segundo_Apellido_Miembro
+                    </span>,
+                    identificado/a con DPI n&uacute;mero
+                    <strong>@Model.sPk_Dpi_Miembro</strong>,
+                    es miembro activo/a de nuestra congregaci&oacute;n desde el
+                    <strong>
+                        @(Model.dCmp_Fecha_Membresia_Miembro.HasValue
+                            ? Model.dCmp_Fecha_Membresia_Miembro.Value.ToString("dd/MM/yyyy")
+                            : "fecha no registrada")
+                    </strong>.
+                </p>
+
+                @if (Model.Area != null)
+                {
+                    <p class="preview-texto">
+                        Actualmente sirve en el &aacute;rea de:
+                        <strong>@Model.Area.sCmp_Nombre_Area</strong>.
+                    </p>
+                }
+
+                <p class="preview-texto">
+                    Sin otro particular, se extiende la presente para los usos
+                    que el interesado estime convenientes.
+                </p>
+
+                <div style="text-align: right; margin-top: 50px;">
+                    <div style="display: inline-block; text-align: center;">
+                        <div style="border-top: 2px solid var(--morado-oscuro);
+                            padding-top: 8px; min-width: 200px;">
+                            <div style="font-weight: 700; color: var(--morado-oscuro);
+                                font-size: 13px;">
+                                Firma y Sello
+                            </div>
+                            <div style="color: #999; font-size: 12px;">
+                                Departamento de Membres&iacute;as
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="linea-dorada" style="margin-top: 30px;"></div>
+
+                <div class="preview-vigencia">
+                    <i class="bi bi-clock me-1"></i>
+                    Esta constancia tiene una vigencia de 60 d&iacute;as a partir de la fecha,
+                    venciendo el <strong>@DateTime.Now.AddDays(60).ToString("dd/MM/yyyy")</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Panel de acciones *@
+    <div class="col-lg-4">
+
+        <div class="info-card">
+            <div class="info-titulo">
+                <i class="bi bi-person-fill me-2"></i>Informaci&oacute;n del Miembro
+            </div>
+            <div class="info-item">
+                <span class="info-label">DPI</span>
+                <span class="info-valor">@Model.sPk_Dpi_Miembro</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Nombre</span>
+                <span class="info-valor">
+                    @Model.sCmp_Primer_Nombre_Miembro
+                    @Model.sCmp_Primer_Apellido_Miembro
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">&Aacute;rea</span>
+                <span class="info-valor">
+                    @(Model.Area?.sCmp_Nombre_Area ?? "Sin &aacute;rea")
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Miembro desde</span>
+                <span class="info-valor">
+                    @(Model.dCmp_Fecha_Membresia_Miembro.HasValue
+                        ? Model.dCmp_Fecha_Membresia_Miembro.Value.ToString("dd/MM/yyyy")
+                        : "No registrado")
+                </span>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-titulo">
+                <i class="bi bi-file-earmark-text me-2"></i>Detalles de la Constancia
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tipo</span>
+                <span class="info-valor">Membres&iacute;a</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Fecha de emisi&oacute;n</span>
+                <span class="info-valor">@DateTime.Now.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Vencimiento</span>
+                <span class="info-valor">
+                    @DateTime.Now.AddDays(60).ToString("dd/MM/yyyy")
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Generada por</span>
+                <span class="info-valor">@ViewBag.NombreUsuario</span>
+            </div>
+        </div>
+
+        <form method="post" action="/Constancias/GenerarPDF">
+            <input type="hidden" name="sDpi" value="@Model.sPk_Dpi_Miembro" />
+            <button type="submit" class="btn-generar">
+                <i class="bi bi-file-earmark-arrow-down-fill me-2"></i>
+                Generar y Descargar PDF
+            </button>
+        </form>
+
+    </div>
+</div>

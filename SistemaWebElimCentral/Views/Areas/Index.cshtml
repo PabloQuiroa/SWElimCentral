@@ -1,0 +1,310 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model IEnumerable<SistemaWebElimCentral.Models.Membresias.Mdl_Area_Servicio>
+@{
+    ViewData["Title"] = "Areas de Servicio";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-nuevo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4);
+            color: var(--morado-oscuro);
+        }
+
+    .tabla-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .tabla-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tabla-areas thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border: none;
+        text-transform: uppercase;
+    }
+
+    .tabla-areas tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .tabla-areas tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    .area-icono {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;
+    }
+
+    .badge-activo {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-inactivo {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .btn-accion {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-editar {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+        .btn-editar:hover {
+            background: #ffc107;
+            color: white;
+        }
+
+    .btn-estado-on {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+        .btn-estado-on:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .btn-estado-off {
+        background: #d4edda;
+        color: #155724;
+    }
+
+        .btn-estado-off:hover {
+            background: #198754;
+            color: white;
+        }
+
+    .sin-resultados {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+        .sin-resultados i {
+            font-size: 50px;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            display: block;
+        }
+</style>
+
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-diagram-3-fill me-2"></i>areas de Servicio
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Gestion de ministerios y areas de servicio
+        </small>
+    </div>
+    <a href="/Areas/Crear" class="btn-nuevo">
+        <i class="bi bi-plus-circle-fill"></i>
+        Nueva area
+    </a>
+</div>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="tabla-card">
+    <div class="tabla-header">
+        <span><i class="bi bi-table me-2"></i>Listado de areas</span>
+        <span style="font-size: 12px; color: var(--dorado-claro);">
+            @Model.Count() area(s) registrada(s)
+        </span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="tabla-areas table">
+                <thead>
+                    <tr>
+                        <th>Icono</th>
+                        <th>Nombre</th>
+                        <th>Descripci&oacute;n</th>
+                        <th>L&iacute;der</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var area in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="area-icono">
+                                    <i class="bi bi-diagram-3"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <strong style="color: var(--morado-oscuro);">
+                                    @area.sCmp_Nombre_Area
+                                </strong>
+                            </td>
+                            <td>
+                                @(string.IsNullOrEmpty(area.sCmp_Descripcion_Area)
+                                    ? "Sin descripci&oacute;n" : area.sCmp_Descripcion_Area)
+                            </td>
+                            <td>
+                                @(string.IsNullOrEmpty(area.sCmp_Lider_Area)
+                                    ? "Sin l&iacute;der asignado" : area.sCmp_Lider_Area)
+                            </td>
+                            <td>
+                                @if (area.bCmp_Estado_Area)
+                                {
+                                    <span class="badge-activo">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-inactivo">Inactiva</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="/Areas/Editar/@area.iPk_Id_Area"
+                                       class="btn-accion btn-editar"
+                                       title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <form method="post"
+                                          action="/Areas/CambiarEstado"
+                                          style="display:inline;">
+                                        <input type="hidden" name="id"
+                                               value="@area.iPk_Id_Area" />
+                                        <button type="submit"
+                                                class="btn-accion @(area.bCmp_Estado_Area ? "btn-estado-on" : "btn-estado-off")"
+                                                onclick="return confirm('@(area.bCmp_Estado_Area ? "Desactivar" : "Activar") esta area?')">
+                                            <i class="bi bi-@(area.bCmp_Estado_Area ? "toggle-on" : "toggle-off")"></i>
+                                            @(area.bCmp_Estado_Area ? "Desactivar" : "Activar")
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="sin-resultados">
+            <i class="bi bi-diagram-3"></i>
+            <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
+                No hay areas registradas
+            </p>
+            <small>Crea la primera area de servicio</small>
+        </div>
+    }
+</div>

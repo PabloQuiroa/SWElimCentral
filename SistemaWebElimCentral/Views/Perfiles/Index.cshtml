@@ -1,0 +1,239 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model IEnumerable<SistemaWebElimCentral.Models.Seguridad.Mdl_Perfil>
+@{
+    ViewData["Title"] = "Perfiles";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-nuevo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4);
+            color: var(--morado-oscuro);
+        }
+
+    .perfil-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 4px solid var(--dorado);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s;
+    }
+
+        .perfil-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+    .perfil-icono {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .perfil-nombre {
+        font-family: 'Cinzel', serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        margin-bottom: 3px;
+    }
+
+    .perfil-descripcion {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .badge-activo {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-inactivo {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .btn-accion {
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-permisos {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        color: white;
+    }
+
+        .btn-permisos:hover {
+            opacity: 0.85;
+            color: white;
+        }
+
+    .btn-estado-on {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+        .btn-estado-on:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .btn-estado-off {
+        background: #d4edda;
+        color: #155724;
+    }
+
+        .btn-estado-off:hover {
+            background: #198754;
+            color: white;
+        }
+</style>
+
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-shield-lock-fill me-2"></i>Perfiles y Permisos
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Administraci&oacute;n de perfiles de acceso al sistema
+        </small>
+    </div>
+    <a href="/Perfiles/Crear" class="btn-nuevo">
+        <i class="bi bi-shield-plus"></i>
+        Nuevo Perfil
+    </a>
+</div>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@foreach (var perfil in Model)
+{
+    <div class="perfil-card">
+        <div class="d-flex align-items-center">
+            <div class="perfil-icono">
+                <i class="bi bi-shield-fill"></i>
+            </div>
+            <div>
+                <div class="perfil-nombre">@perfil.sCmp_Nombre_Perfil</div>
+                <div class="perfil-descripcion">
+                    @(string.IsNullOrEmpty(perfil.sCmp_Descripcion_Perfil)
+                        ? "Sin descripci&oacute;n" : perfil.sCmp_Descripcion_Perfil)
+                </div>
+                <div class="mt-1">
+                    @if (perfil.bCmp_Estado_Perfil)
+                    {
+                        <span class="badge-activo">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge-inactivo">Inactivo</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="/Perfiles/Permisos/@perfil.iPk_Id_Perfil"
+               class="btn-accion btn-permisos">
+                <i class="bi bi-sliders"></i> Permisos
+            </a>
+            <form method="post" action="/Perfiles/CambiarEstado" style="display:inline;">
+                <input type="hidden" name="id" value="@perfil.iPk_Id_Perfil" />
+                <button type="submit"
+                        class="btn-accion @(perfil.bCmp_Estado_Perfil ? "btn-estado-on" : "btn-estado-off")"
+                        onclick="return confirm('@(perfil.bCmp_Estado_Perfil ? "Desactivar" : "Activar") este perfil?')">
+                    <i class="bi bi-@(perfil.bCmp_Estado_Perfil ? "toggle-on" : "toggle-off")"></i>
+                    @(perfil.bCmp_Estado_Perfil ? "Desactivar" : "Activar")
+                </button>
+            </form>
+        </div>
+    </div>
+}

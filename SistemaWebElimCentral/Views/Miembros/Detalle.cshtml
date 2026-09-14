@@ -1,0 +1,450 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model SistemaWebElimCentral.Models.Membresias.Mdl_Miembro
+@{
+    ViewData["Title"] = "Detalle del Miembro";
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-regresar {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.4);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-regresar:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+        }
+
+    .perfil-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .perfil-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .perfil-foto {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--dorado);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        margin-bottom: 15px;
+    }
+
+    .perfil-foto-placeholder {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid var(--dorado);
+        margin: 0 auto 15px;
+    }
+
+        .perfil-foto-placeholder i {
+            font-size: 55px;
+            color: rgba(255,255,255,0.7);
+        }
+
+    .perfil-nombre {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 5px;
+    }
+
+    .perfil-dpi {
+        color: var(--dorado-claro);
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    .perfil-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-top: 8px;
+    }
+
+    .perfil-badge-activo {
+        background: rgba(40, 167, 69, 0.2);
+        color: #7fff9f;
+        border: 1px solid rgba(40, 167, 69, 0.4);
+    }
+
+    .seccion-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+    .seccion-header {
+        background: var(--crema);
+        padding: 12px 20px;
+        border-left: 4px solid var(--dorado);
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .seccion-body {
+        padding: 20px;
+    }
+
+    .dato-item {
+        margin-bottom: 15px;
+    }
+
+    .dato-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+    }
+
+    .dato-valor {
+        font-size: 14px;
+        color: var(--morado-oscuro);
+        font-weight: 600;
+    }
+
+    .dato-vacio {
+        color: #ccc;
+        font-style: italic;
+        font-weight: 400;
+    }
+
+    .btn-accion-detalle {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+    .btn-editar-detalle {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        color: white;
+    }
+
+        .btn-editar-detalle:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 5px 15px rgba(74, 14, 110, 0.3);
+        }
+
+    .btn-constancia-detalle {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+    }
+
+        .btn-constancia-detalle:hover {
+            transform: translateY(-2px);
+            color: var(--morado-oscuro);
+            box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4);
+        }
+
+    .linea-dorada {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+        margin: 15px 0;
+    }
+</style>
+
+@* Encabezado *@
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-person-lines-fill me-2"></i>Detalle del Miembro
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Información completa del miembro de la congregación
+        </small>
+    </div>
+    <a href="/Miembros" class="btn-regresar">
+        <i class="bi bi-arrow-left"></i> Regresar
+    </a>
+</div>
+
+<div class="row g-4">
+
+    @* Columna izquierda - Perfil *@
+    <div class="col-lg-4">
+
+        @* Tarjeta de perfil *@
+        <div class="perfil-card">
+            <div class="perfil-header">
+                @if (!string.IsNullOrEmpty(Model.sCmp_Foto_Miembro))
+                {
+                    <img src="@Model.sCmp_Foto_Miembro"
+                         class="perfil-foto"
+                         alt="Foto del miembro" />
+                }
+                else
+                {
+                    <div class="perfil-foto-placeholder">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                }
+                <div class="perfil-nombre">
+                    @Model.sCmp_Primer_Nombre_Miembro @Model.sCmp_Segundo_Nombre_Miembro
+                    @Model.sCmp_Primer_Apellido_Miembro @Model.sCmp_Segundo_Apellido_Miembro
+                </div>
+                <div class="perfil-dpi">
+                    <i class="bi bi-credit-card me-1"></i>@Model.sPk_Dpi_Miembro
+                </div>
+                <div class="perfil-badge perfil-badge-activo">
+                    <i class="bi bi-check-circle me-1"></i>Miembro Activo
+                </div>
+            </div>
+
+            <div class="seccion-body">
+                <div class="dato-item">
+                    <div class="dato-label">Área de Servicio</div>
+                    <div class="dato-valor">
+                        <i class="bi bi-diagram-3 me-1" style="color: var(--dorado);"></i>
+                        @(Model.Area?.sCmp_Nombre_Area ?? "Sin área asignada")
+                    </div>
+                </div>
+                <div class="linea-dorada"></div>
+                <div class="dato-item">
+                    <div class="dato-label">Privilegio</div>
+                    <div class="dato-valor">
+                        @(string.IsNullOrEmpty(Model.sCmp_Privilegio_Miembro)
+                            ? "Sin privilegio" : Model.sCmp_Privilegio_Miembro)
+                    </div>
+                </div>
+                <div class="linea-dorada"></div>
+                <div class="dato-item">
+                    <div class="dato-label">Miembro desde</div>
+                    <div class="dato-valor">
+                        @(Model.dCmp_Fecha_Membresia_Miembro.HasValue
+                            ? Model.dCmp_Fecha_Membresia_Miembro.Value.ToString("dd/MM/yyyy")
+                            : "No registrado")
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Botones de acción *@
+        <div class="d-flex flex-column gap-3">
+            <a href="/Miembros/Editar/@Model.sPk_Dpi_Miembro"
+               class="btn-accion-detalle btn-editar-detalle">
+                <i class="bi bi-pencil-fill"></i> Editar Información
+            </a>
+            <a href="/Constancias/Generar/@Model.sPk_Dpi_Miembro"
+               class="btn-accion-detalle btn-constancia-detalle">
+                <i class="bi bi-file-earmark-text-fill"></i> Generar Constancia
+            </a>
+        </div>
+    </div>
+
+    @* Columna derecha - Información *@
+    <div class="col-lg-8">
+
+        @* Datos personales *@
+        <div class="seccion-card">
+            <div class="seccion-header">
+                <i class="bi bi-person-badge-fill"></i> Datos Personales
+            </div>
+            <div class="seccion-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Fecha de Nacimiento</div>
+                            <div class="dato-valor">
+                                @Model.dCmp_Fecha_Nacimiento_Miembro.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Sexo</div>
+                            <div class="dato-valor">
+                                @(Model.sCmp_Sexo_Miembro == "M" ? "Masculino" : "Femenino")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Estado Civil</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Estado_Civil_Miembro)
+                                    ? "No registrado" : Model.sCmp_Estado_Civil_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Teléfono</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Telefono_Miembro)
+                                    ? "No registrado" : Model.sCmp_Telefono_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Correo Electrónico</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Correo_Miembro)
+                                    ? "No registrado" : Model.sCmp_Correo_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Profesión</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Profesion_Miembro)
+                                    ? "No registrado" : Model.sCmp_Profesion_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="dato-item">
+                            <div class="dato-label">Dirección</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Direccion_Miembro)
+                                    ? "No registrado" : Model.sCmp_Direccion_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @* Datos espirituales *@
+        <div class="seccion-card">
+            <div class="seccion-header">
+                <i class="bi bi-heart-fill"></i> Datos Espirituales
+            </div>
+            <div class="seccion-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Iglesia de Conversión</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Iglesia_Conversion_Miembro)
+                                    ? "No registrado" : Model.sCmp_Iglesia_Conversion_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Fecha de Conversión</div>
+                            <div class="dato-valor">
+                                @(Model.dCmp_Fecha_Conversion_Miembro.HasValue
+                                    ? Model.dCmp_Fecha_Conversion_Miembro.Value.ToString("dd/MM/yyyy")
+                                    : "No registrado")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Iglesia de Bautismo</div>
+                            <div class="dato-valor">
+                                @(string.IsNullOrEmpty(Model.sCmp_Iglesia_Bautismo_Miembro)
+                                    ? "No registrado" : Model.sCmp_Iglesia_Bautismo_Miembro)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Fecha Bautismo en Agua</div>
+                            <div class="dato-valor">
+                                @(Model.dCmp_Fecha_Bautismo_Agua_Miembro.HasValue
+                                    ? Model.dCmp_Fecha_Bautismo_Agua_Miembro.Value.ToString("dd/MM/yyyy")
+                                    : "No registrado")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Fecha Bautismo en Espíritu</div>
+                            <div class="dato-valor">
+                                @(Model.dCmp_Fecha_Bautismo_Espiritu_Miembro.HasValue
+                                    ? Model.dCmp_Fecha_Bautismo_Espiritu_Miembro.Value.ToString("dd/MM/yyyy")
+                                    : "No registrado")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="dato-item">
+                            <div class="dato-label">Fecha de Membresía</div>
+                            <div class="dato-valor">
+                                @(Model.dCmp_Fecha_Membresia_Miembro.HasValue
+                                    ? Model.dCmp_Fecha_Membresia_Miembro.Value.ToString("dd/MM/yyyy")
+                                    : "No registrado")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
