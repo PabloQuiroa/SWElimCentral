@@ -1,0 +1,561 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@using SistemaWebElimCentral.Models.Membresias
+@model Mdl_Grupo_Familiar
+@{
+    ViewData["Title"] = "Expediente Familiar";
+    var gPadre = ViewBag.Padre as Mdl_Miembro;
+    var gMadre = ViewBag.Madre as Mdl_Miembro;
+    var lstMiembros = ViewBag.MiembrosFamilia as List<Mdl_Miembro> ?? new List<Mdl_Miembro>();
+    var lstHijos = ViewBag.HijosMenores as List<Mdl_Hijo_Menor> ?? new List<Mdl_Hijo_Menor>();
+    bool bPuedeEditar = ViewBag.PuedeEditar ?? false;
+    bool bPuedeEliminar = ViewBag.PuedeEliminar ?? false;
+    var lstConyuges = new List<(Mdl_Miembro? gConyuge, string sRol)>
+    {
+        (gPadre, "Esposo / Padre"),
+        (gMadre, "Esposa / Madre")
+    };
+    int iTotalIntegrantes = (gPadre != null ? 1 : 0) + (gMadre != null ? 1 : 0) + lstMiembros.Count + lstHijos.Count;
+
+    Func<DateTime?, string> fun_Edad = (dFecha) =>
+    {
+        if (!dFecha.HasValue) return "-";
+        int iEdad = DateTime.Today.Year - dFecha.Value.Year;
+        if (dFecha.Value.Date > DateTime.Today.AddYears(-iEdad)) iEdad--;
+        return iEdad + " año(s)";
+    };
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-nuevo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4);
+            color: var(--morado-oscuro);
+        }
+
+    .btn-volver {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .btn-volver:hover {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
+
+    .seccion-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 20px;
+    }
+
+        /* La sección con buscador no recorta la lista de resultados */
+        .seccion-card.con-buscador {
+            overflow: visible;
+        }
+
+            .seccion-card.con-buscador .seccion-header {
+                border-radius: 12px 12px 0 0;
+            }
+
+    .seccion-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .seccion-body {
+        padding: 20px;
+    }
+
+    .conyuge-card {
+        background: var(--crema);
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        height: 100%;
+    }
+
+    .conyuge-foto {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--dorado);
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .conyuge-rol {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--dorado);
+        letter-spacing: 0.5px;
+    }
+
+    .conyuge-nombre {
+        font-weight: 700;
+        color: var(--morado-oscuro);
+        font-size: 15px;
+    }
+
+    .tabla-detalle thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border: none;
+        text-transform: uppercase;
+    }
+
+    .tabla-detalle tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        font-size: 13px;
+    }
+
+    .form-agregar {
+        background: var(--crema);
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+        .form-agregar label {
+            color: var(--morado-oscuro);
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+    .btn-accion {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-ver {
+        background: #e8dff0;
+        color: var(--morado-oscuro);
+    }
+
+        .btn-ver:hover {
+            background: var(--morado-medio);
+            color: white;
+        }
+
+    .btn-quitar {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+        .btn-quitar:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .btn-agregar {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+        .btn-agregar:hover {
+            color: var(--dorado-claro);
+        }
+
+    .badge-activo {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-inactivo {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .sin-datos {
+        text-align: center;
+        padding: 20px;
+        color: #999;
+        font-size: 13px;
+    }
+</style>
+
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-house-heart-fill me-2"></i>@Model.sCmp_Nombre_Familia
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Expediente familiar &middot; @iTotalIntegrantes integrante(s) &middot;
+            registrada el @Model.dCmp_Fecha_Creacion_Grupo.ToString("dd/MM/yyyy")
+        </small>
+        <span class="ms-2 @(Model.bCmp_Estado_Grupo ? "badge-activo" : "badge-inactivo")">
+            @(Model.bCmp_Estado_Grupo ? "Activa" : "Inactiva")
+        </span>
+    </div>
+    <div class="d-flex gap-2">
+        @if (bPuedeEditar)
+        {
+            <a href="/NucleoFamiliar/Editar/@Model.iPk_Id_Grupo_Familiar" class="btn-nuevo">
+                <i class="bi bi-pencil-fill"></i>Editar
+            </a>
+        }
+        <a href="/NucleoFamiliar" class="btn-volver">
+            <i class="bi bi-arrow-left"></i>Volver
+        </a>
+    </div>
+</div>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* ============ CÓNYUGES ============ *@
+<div class="seccion-card">
+    <div class="seccion-header">
+        <span><i class="bi bi-heart-fill me-2"></i>Cónyuges</span>
+    </div>
+    <div class="seccion-body">
+        <div class="row g-3">
+            @foreach (var c in lstConyuges)
+            {
+                var gConyuge = c.gConyuge;
+                <div class="col-md-6">
+                    <div class="conyuge-card">
+                        @if (gConyuge != null && !string.IsNullOrEmpty(gConyuge.sCmp_Foto_Miembro))
+                        {
+                            <img src="@gConyuge.sCmp_Foto_Miembro" class="conyuge-foto" alt="Foto" />
+                        }
+                        else
+                        {
+                            <div class="conyuge-foto"><i class="bi bi-person-fill"></i></div>
+                        }
+                        <div class="flex-grow-1">
+                            <div class="conyuge-rol">@c.sRol</div>
+                            @if (gConyuge != null)
+                            {
+                                <div class="conyuge-nombre">
+                                    @gConyuge.sCmp_Primer_Nombre_Miembro @gConyuge.sCmp_Segundo_Nombre_Miembro
+                                    @gConyuge.sCmp_Primer_Apellido_Miembro @gConyuge.sCmp_Segundo_Apellido_Miembro
+                                </div>
+                                <small class="text-muted">DPI: @gConyuge.sPk_Dpi_Miembro</small>
+                                @if (!string.IsNullOrEmpty(gConyuge.sCmp_Telefono_Miembro))
+                                {
+                                    <small class="text-muted"> &middot; Tel: @gConyuge.sCmp_Telefono_Miembro</small>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-muted" style="font-size: 13px;">Sin asignar</div>
+                            }
+                        </div>
+                        @if (gConyuge != null)
+                        {
+                            <a href="/Miembros/Detalle/@gConyuge.sPk_Dpi_Miembro"
+                               class="btn-accion btn-ver" title="Ver ficha del miembro">
+                                <i class="bi bi-eye-fill"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@* ============ OTROS MIEMBROS DE LA FAMILIA ============ *@
+<div class="seccion-card con-buscador">
+    <div class="seccion-header">
+        <span><i class="bi bi-people-fill me-2"></i>Otros integrantes registrados como miembros</span>
+        <span style="font-size: 12px; color: var(--dorado-claro);">@lstMiembros.Count integrante(s)</span>
+    </div>
+    <div class="seccion-body">
+        @if (lstMiembros.Any())
+        {
+            <div class="table-responsive">
+                <table class="tabla-detalle table mb-0">
+                    <thead>
+                        <tr>
+                            <th>DPI</th>
+                            <th>Nombre</th>
+                            <th>Edad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var gMiembro in lstMiembros)
+                        {
+                            <tr>
+                                <td>@gMiembro.sPk_Dpi_Miembro</td>
+                                <td>
+                                    <strong style="color: var(--morado-oscuro);">
+                                        @gMiembro.sCmp_Primer_Nombre_Miembro @gMiembro.sCmp_Primer_Apellido_Miembro
+                                    </strong>
+                                </td>
+                                <td>@fun_Edad(gMiembro.dCmp_Fecha_Nacimiento_Miembro)</td>
+                                <td>
+                                    <span class="@(gMiembro.bCmp_Estado_Miembro ? "badge-activo" : "badge-inactivo")">
+                                        @(gMiembro.bCmp_Estado_Miembro ? "Activo" : "Inactivo")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="/Miembros/Detalle/@gMiembro.sPk_Dpi_Miembro"
+                                           class="btn-accion btn-ver" title="Ver ficha">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </a>
+                                        @if (bPuedeEditar)
+                                        {
+                                            <form method="post" action="/NucleoFamiliar/DesvincularMiembro" style="display:inline;">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="iIdGrupo" value="@Model.iPk_Id_Grupo_Familiar" />
+                                                <input type="hidden" name="sDpiMiembro" value="@gMiembro.sPk_Dpi_Miembro" />
+                                                <button type="submit" class="btn-accion btn-quitar"
+                                                        onclick="return confirm('¿Quitar a este miembro de la familia?')">
+                                                    <i class="bi bi-person-dash-fill"></i>Quitar
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="sin-datos">No hay otros miembros vinculados a esta familia.</div>
+        }
+
+        @if (bPuedeEditar)
+        {
+            <form method="post" action="/NucleoFamiliar/VincularMiembro" class="form-agregar">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="iIdGrupo" value="@Model.iPk_Id_Grupo_Familiar" />
+                <label class="mb-1">Vincular un miembro registrado sin familia (ej. hijo mayor de edad)</label>
+                <div class="d-flex gap-2">
+                    <div class="buscador-miembro flex-grow-1" data-grupo="" data-obligatorio="true">
+                        <input type="text" class="form-control buscador-texto" autocomplete="off"
+                               placeholder="Escriba el nombre o DPI del miembro..." />
+                        <input type="hidden" name="sDpiMiembro" class="buscador-valor" />
+                        <div class="buscador-resultados"></div>
+                    </div>
+                    <button type="submit" class="btn-agregar">
+                        <i class="bi bi-person-plus-fill me-1"></i>Vincular
+                    </button>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@* ============ HIJOS MENORES ============ *@
+<div class="seccion-card">
+    <div class="seccion-header">
+        <span><i class="bi bi-balloon-heart-fill me-2"></i>Hijos menores de edad</span>
+        <span style="font-size: 12px; color: var(--dorado-claro);">@lstHijos.Count hijo(s)</span>
+    </div>
+    <div class="seccion-body">
+        @if (lstHijos.Any())
+        {
+            <div class="table-responsive">
+                <table class="tabla-detalle table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Nombre completo</th>
+                            <th>Fecha de nacimiento</th>
+                            <th>Edad</th>
+                            <th>Sexo</th>
+                            @if (bPuedeEliminar)
+                            {
+                                <th>Acciones</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var gHijo in lstHijos)
+                        {
+                            <tr>
+                                <td>
+                                    <strong style="color: var(--morado-oscuro);">@gHijo.sCmp_Nombre_Completo_Hijo</strong>
+                                </td>
+                                <td>@(gHijo.dCmp_Fecha_Nacimiento_Hijo?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                <td>@fun_Edad(gHijo.dCmp_Fecha_Nacimiento_Hijo)</td>
+                                <td>@(gHijo.sCmp_Sexo_Hijo == "M" ? "Masculino" : "Femenino")</td>
+                                @if (bPuedeEliminar)
+                                {
+                                    <td>
+                                        <form method="post" action="/NucleoFamiliar/EliminarHijo" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="iIdHijo" value="@gHijo.iPk_Id_Hijo" />
+                                            <button type="submit" class="btn-accion btn-quitar"
+                                                    onclick="return confirm('¿Eliminar a este hijo del expediente?')">
+                                                <i class="bi bi-trash-fill"></i>Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="sin-datos">No hay hijos menores registrados en esta familia.</div>
+        }
+
+        @if (bPuedeEditar)
+        {
+            <form method="post" action="/NucleoFamiliar/AgregarHijo" class="form-agregar">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="iIdGrupo" value="@Model.iPk_Id_Grupo_Familiar" />
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                        <label class="mb-1">Nombre completo *</label>
+                        <input type="text" name="sNombreHijo" class="form-control"
+                               maxlength="200" required placeholder="Nombres y apellidos" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="mb-1">Fecha de nacimiento</label>
+                        <input type="date" name="dFechaNacimiento" class="form-control"
+                               max="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               min="@DateTime.Today.AddYears(-18).AddDays(1).ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="mb-1">Sexo *</label>
+                        <select name="sSexoHijo" class="form-select" required>
+                            <option value="">--</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn-agregar w-100">
+                            <i class="bi bi-plus-circle-fill me-1"></i>Agregar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@await Html.PartialAsync("_BuscadorMiembro")

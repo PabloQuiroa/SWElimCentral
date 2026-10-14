@@ -1,0 +1,410 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@model IEnumerable<SistemaWebElimCentral.Models.Membresias.Mdl_Grupo_Familiar>
+@{
+    ViewData["Title"] = "Núcleo Familiar";
+    var dicMiembros = ViewBag.TotalMiembros as Dictionary<int, int> ?? new Dictionary<int, int>();
+    var dicHijos = ViewBag.TotalHijos as Dictionary<int, int> ?? new Dictionary<int, int>();
+    var dicNombres = ViewBag.NombresConyuges as Dictionary<string, string> ?? new Dictionary<string, string>();
+    bool bPuedeCrear = ViewBag.PuedeCrear ?? false;
+    bool bPuedeEditar = ViewBag.PuedeEditar ?? false;
+    bool bPuedeEliminar = ViewBag.PuedeEliminar ?? false;
+}
+
+<style>
+    :root {
+        --morado-oscuro: #4A0E6E;
+        --morado-medio: #7B2D9E;
+        --dorado: #C9A84C;
+        --dorado-claro: #E8C97A;
+        --crema: #F5F0E8;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header-titulo {
+        font-family: 'Cinzel', serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .btn-nuevo {
+        background: linear-gradient(135deg, var(--dorado), var(--dorado-claro));
+        color: var(--morado-oscuro);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 13px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.3s;
+    }
+
+        .btn-nuevo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(201, 168, 76, 0.4);
+            color: var(--morado-oscuro);
+        }
+
+    .buscador-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+        .buscador-card input {
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+    .btn-buscar {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .btn-buscar:hover {
+            color: var(--dorado-claro);
+        }
+
+    .tabla-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .tabla-header {
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        padding: 15px 20px;
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .tabla-familias thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        padding: 12px 15px;
+        border: none;
+        text-transform: uppercase;
+    }
+
+    .tabla-familias tbody td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .tabla-familias tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    .familia-icono {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;
+    }
+
+    .contador {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .badge-activo {
+        background: #d4edda;
+        color: #155724;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-inactivo {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .btn-accion {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.2s;
+    }
+
+    .btn-ver {
+        background: #e8dff0;
+        color: var(--morado-oscuro);
+    }
+
+        .btn-ver:hover {
+            background: var(--morado-medio);
+            color: white;
+        }
+
+    .btn-editar {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+        .btn-editar:hover {
+            background: #ffc107;
+            color: white;
+        }
+
+    .btn-estado-on {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+        .btn-estado-on:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+    .btn-estado-off {
+        background: #d4edda;
+        color: #155724;
+    }
+
+        .btn-estado-off:hover {
+            background: #198754;
+            color: white;
+        }
+
+    .sin-resultados {
+        text-align: center;
+        padding: 50px;
+        color: #999;
+    }
+
+        .sin-resultados i {
+            font-size: 50px;
+            color: var(--dorado);
+            margin-bottom: 15px;
+            display: block;
+        }
+</style>
+
+<div class="page-header">
+    <div>
+        <p class="page-header-titulo">
+            <i class="bi bi-house-heart-fill me-2"></i>Núcleo Familiar
+        </p>
+        <small style="color: var(--dorado-claro); font-size: 12px;">
+            Control de familias de la congregación
+        </small>
+    </div>
+    @if (bPuedeCrear)
+    {
+        <a href="/NucleoFamiliar/Crear" class="btn-nuevo">
+            <i class="bi bi-plus-circle-fill"></i>
+            Nueva familia
+        </a>
+    }
+</div>
+
+@if (TempData["Exito"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #198754;">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["Exito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3"
+         style="border-radius: 10px; border-left: 4px solid #dc3545;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="buscador-card">
+    <form method="get" action="/NucleoFamiliar" class="d-flex gap-2">
+        <input type="text" name="sBuscar" class="form-control"
+               placeholder="Buscar por nombre de familia..."
+               value="@ViewBag.Buscar" />
+        <button type="submit" class="btn-buscar">
+            <i class="bi bi-search"></i>
+        </button>
+        @if (!string.IsNullOrEmpty(ViewBag.Buscar as string))
+        {
+            <a href="/NucleoFamiliar" class="btn btn-light" style="border-radius: 10px; font-size: 13px;">
+                Limpiar
+            </a>
+        }
+    </form>
+</div>
+
+<div class="tabla-card">
+    <div class="tabla-header">
+        <span><i class="bi bi-table me-2"></i>Listado de familias</span>
+        <span style="font-size: 12px; color: var(--dorado-claro);">
+            @Model.Count() familia(s) registrada(s)
+        </span>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="tabla-familias table">
+                <thead>
+                    <tr>
+                        <th>Icono</th>
+                        <th>Familia</th>
+                        <th>Esposo</th>
+                        <th>Esposa</th>
+                        <th>Integrantes</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var familia in Model)
+                    {
+                        int iId = familia.iPk_Id_Grupo_Familiar;
+                        int iMiembros = dicMiembros.ContainsKey(iId) ? dicMiembros[iId] : 0;
+                        int iHijos = dicHijos.ContainsKey(iId) ? dicHijos[iId] : 0;
+                        string sEsposo = familia.sCmp_Dpi_Padre != null && dicNombres.ContainsKey(familia.sCmp_Dpi_Padre)
+                            ? dicNombres[familia.sCmp_Dpi_Padre] : "Sin asignar";
+                        string sEsposa = familia.sCmp_Dpi_Madre != null && dicNombres.ContainsKey(familia.sCmp_Dpi_Madre)
+                            ? dicNombres[familia.sCmp_Dpi_Madre] : "Sin asignar";
+
+                        <tr>
+                            <td>
+                                <div class="familia-icono">
+                                    <i class="bi bi-house-heart"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <strong style="color: var(--morado-oscuro);">
+                                    @familia.sCmp_Nombre_Familia
+                                </strong>
+                                <br />
+                                <small class="text-muted">
+                                    Desde @familia.dCmp_Fecha_Creacion_Grupo.ToString("dd/MM/yyyy")
+                                </small>
+                            </td>
+                            <td>@sEsposo</td>
+                            <td>@sEsposa</td>
+                            <td>
+                                <span class="contador" title="Miembros registrados">
+                                    <i class="bi bi-person-fill"></i> @iMiembros
+                                </span>
+                                <span class="contador" title="Hijos menores">
+                                    <i class="bi bi-balloon-fill"></i> @iHijos
+                                </span>
+                            </td>
+                            <td>
+                                @if (familia.bCmp_Estado_Grupo)
+                                {
+                                    <span class="badge-activo">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-inactivo">Inactiva</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="/NucleoFamiliar/Detalle/@iId"
+                                       class="btn-accion btn-ver"
+                                       title="Ver expediente">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                    @if (bPuedeEditar)
+                                    {
+                                        <a href="/NucleoFamiliar/Editar/@iId"
+                                           class="btn-accion btn-editar"
+                                           title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    }
+                                    @if (bPuedeEliminar)
+                                    {
+                                        <form method="post"
+                                              action="/NucleoFamiliar/CambiarEstado"
+                                              style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@iId" />
+                                            <button type="submit"
+                                                    class="btn-accion @(familia.bCmp_Estado_Grupo ? "btn-estado-on" : "btn-estado-off")"
+                                                    onclick="return confirm('¿@(familia.bCmp_Estado_Grupo ? "Desactivar" : "Activar") esta familia?')">
+                                                <i class="bi bi-@(familia.bCmp_Estado_Grupo ? "toggle-on" : "toggle-off")"></i>
+                                                @(familia.bCmp_Estado_Grupo ? "Desactivar" : "Activar")
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="sin-resultados">
+            <i class="bi bi-house-heart"></i>
+            <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
+                No hay familias registradas
+            </p>
+            <small>Crea el primer núcleo familiar</small>
+        </div>
+    }
+</div>
+

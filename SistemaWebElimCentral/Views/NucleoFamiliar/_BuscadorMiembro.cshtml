@@ -1,0 +1,247 @@
+﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@* Buscador de miembros con autocompletado.
+   Se usa en Crear, Editar y Detalle del módulo de Núcleo Familiar.
+   Cada buscador en la vista se escribe así:
+
+   <div class="buscador-miembro" data-sexo="M" data-grupo="5">
+       <input type="text" class="form-control buscador-texto" placeholder="..." />
+       <input type="hidden" name="sDpiPadre" class="buscador-valor" />
+       <div class="buscador-resultados"></div>
+   </div>
+*@
+
+<style>
+    .buscador-miembro {
+        position: relative;
+    }
+
+        .buscador-miembro .buscador-texto {
+            padding-right: 34px;
+        }
+
+        .buscador-miembro .buscador-limpiar {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: #999;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            padding: 0;
+        }
+
+        .buscador-miembro.seleccionado .buscador-limpiar {
+            display: block;
+        }
+
+        .buscador-miembro.seleccionado .buscador-texto {
+            background: #f4eef9;
+            border-color: var(--morado-medio, #7B2D9E);
+            font-weight: 600;
+            color: var(--morado-oscuro, #4A0E6E);
+        }
+
+    .buscador-resultados {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        margin-top: 4px;
+        max-height: 280px;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .buscador-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+        .buscador-item:last-child {
+            border-bottom: none;
+        }
+
+        .buscador-item:hover, .buscador-item.activo {
+            background: #f4eef9;
+        }
+
+        .buscador-item .nombre {
+            font-weight: 700;
+            color: var(--morado-oscuro, #4A0E6E);
+        }
+
+        .buscador-item .dpi {
+            font-size: 11px;
+            color: #888;
+        }
+
+    .buscador-mensaje {
+        padding: 12px 14px;
+        font-size: 12px;
+        color: #999;
+    }
+</style>
+
+<script>
+    (function() {
+        document.querySelectorAll('.buscador-miembro').forEach(function(contenedor) {
+            var txtTexto = contenedor.querySelector('.buscador-texto');
+            var hdnValor = contenedor.querySelector('.buscador-valor');
+            var divResultados = contenedor.querySelector('.buscador-resultados');
+            var sSexo = contenedor.dataset.sexo || '';
+            var sGrupo = contenedor.dataset.grupo || '';
+            var iTemporizador = null;
+            var iIndiceActivo = -1;
+
+            // Botón para quitar la selección
+            var btnLimpiar = document.createElement('button');
+            btnLimpiar.type = 'button';
+            btnLimpiar.className = 'buscador-limpiar';
+            btnLimpiar.title = 'Quitar selección';
+            btnLimpiar.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
+            contenedor.appendChild(btnLimpiar);
+
+            if (hdnValor.value) contenedor.classList.add('seleccionado');
+
+            function fun_Mensaje(sTexto) {
+                divResultados.innerHTML = '';
+                var div = document.createElement('div');
+                div.className = 'buscador-mensaje';
+                div.textContent = sTexto;
+                divResultados.appendChild(div);
+                divResultados.style.display = 'block';
+            }
+
+            function fun_Seleccionar(gMiembro) {
+                hdnValor.value = gMiembro.dpi;
+                txtTexto.value = gMiembro.nombre + ' - ' + gMiembro.dpi;
+                contenedor.classList.add('seleccionado');
+                divResultados.style.display = 'none';
+            }
+
+            function fun_Limpiar() {
+                hdnValor.value = '';
+                txtTexto.value = '';
+                contenedor.classList.remove('seleccionado');
+                divResultados.style.display = 'none';
+                txtTexto.focus();
+            }
+
+            function fun_Buscar() {
+                var sTexto = txtTexto.value.trim();
+                if (sTexto.length < 2) {
+                    divResultados.style.display = 'none';
+                    return;
+                }
+
+                fun_Mensaje('Buscando...');
+
+                var sUrl = '/NucleoFamiliar/BuscarMiembros?sTexto=' + encodeURIComponent(sTexto) +
+                    '&sSexo=' + encodeURIComponent(sSexo) +
+                    '&iIdGrupo=' + encodeURIComponent(sGrupo);
+
+                fetch(sUrl)
+                    .then(function(r) { return r.json(); })
+                    .then(function(lstMiembros) {
+                        // Si el usuario siguió escribiendo, se ignora esta respuesta
+                        if (txtTexto.value.trim() !== sTexto) return;
+
+                        if (lstMiembros.length === 0) {
+                            fun_Mensaje('No se encontraron miembros disponibles.');
+                            return;
+                        }
+
+                        divResultados.innerHTML = '';
+                        iIndiceActivo = -1;
+                        lstMiembros.forEach(function(gMiembro) {
+                            var item = document.createElement('div');
+                            item.className = 'buscador-item';
+
+                            var divNombre = document.createElement('div');
+                            divNombre.className = 'nombre';
+                            divNombre.textContent = gMiembro.nombre;
+
+                            var divDpi = document.createElement('div');
+                            divDpi.className = 'dpi';
+                            divDpi.textContent = 'DPI: ' + gMiembro.dpi;
+
+                            item.appendChild(divNombre);
+                            item.appendChild(divDpi);
+                            item.addEventListener('mousedown', function(e) {
+                                e.preventDefault();
+                                fun_Seleccionar(gMiembro);
+                            });
+                            divResultados.appendChild(item);
+                        });
+                        divResultados.style.display = 'block';
+                    })
+                    .catch(function() {
+                        fun_Mensaje('Error al buscar. Intente de nuevo.');
+                    });
+            }
+
+            // Al escribir se borra la selección anterior y se busca de nuevo
+            txtTexto.addEventListener('input', function() {
+                hdnValor.value = '';
+                contenedor.classList.remove('seleccionado');
+                clearTimeout(iTemporizador);
+                iTemporizador = setTimeout(fun_Buscar, 300);
+            });
+
+            // Navegación con flechas y Enter
+            txtTexto.addEventListener('keydown', function(e) {
+                var lstItems = divResultados.querySelectorAll('.buscador-item');
+                if (e.key === 'Enter' && divResultados.style.display === 'block') {
+                    e.preventDefault();
+                    if (iIndiceActivo >= 0 && lstItems[iIndiceActivo])
+                        lstItems[iIndiceActivo].dispatchEvent(new Event('mousedown'));
+                    return;
+                }
+                if (!lstItems.length) return;
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    iIndiceActivo = Math.min(iIndiceActivo + 1, lstItems.length - 1);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    iIndiceActivo = Math.max(iIndiceActivo - 1, 0);
+                } else {
+                    return;
+                }
+                lstItems.forEach(function(it, i) { it.classList.toggle('activo', i === iIndiceActivo); });
+                lstItems[iIndiceActivo].scrollIntoView({ block: 'nearest' });
+            });
+
+            txtTexto.addEventListener('blur', function() {
+                divResultados.style.display = 'none';
+                // Si escribió algo pero no eligió de la lista, se borra el texto
+                if (!hdnValor.value) txtTexto.value = '';
+            });
+
+            btnLimpiar.addEventListener('click', fun_Limpiar);
+        });
+
+        // Si un buscador es obligatorio, no dejar enviar el formulario sin elegir a alguien
+        document.querySelectorAll('form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                var lstObligatorios = form.querySelectorAll('.buscador-miembro[data-obligatorio="true"]');
+                for (var i = 0; i < lstObligatorios.length; i++) {
+                    if (!lstObligatorios[i].querySelector('.buscador-valor').value) {
+                        e.preventDefault();
+                        alert('Busque y seleccione un miembro de la lista.');
+                        lstObligatorios[i].querySelector('.buscador-texto').focus();
+                        return;
+                    }
+                }
+            });
+        });
+    })();
+</script>

@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="SistemaWebElimCentral.Tests/SistemaWebElimCentral.Tests.csproj" Id="92486ae2-6668-4eee-96c5-66a0dcda8021" />
   <Project Path="SistemaWebElimCentral/SistemaWebElimCentral.csproj" />
 </Solution>
