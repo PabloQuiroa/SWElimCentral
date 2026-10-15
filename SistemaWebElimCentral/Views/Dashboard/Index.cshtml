@@ -1,12 +1,14 @@
 ﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
+@using SistemaWebElimCentral.Models.Membresias
 @{
     ViewData["Title"] = "Dashboard";
+    var lstUltimasConstancias = ViewBag.UltimasConstancias as List<Mdl_Constancia> ?? new List<Mdl_Constancia>();
 }
 
 <style>
     /* ================================
-           VARIABLES
-        ================================ */
+               VARIABLES
+            ================================ */
     :root {
         --morado-oscuro: #4A0E6E;
         --morado-medio: #7B2D9E;
@@ -17,8 +19,8 @@
     }
 
     /* ================================
-           ENCABEZADO DEL DASHBOARD
-        ================================ */
+               ENCABEZADO DEL DASHBOARD
+            ================================ */
     .dashboard-header {
         background: linear-gradient(135deg, var(--morado-oscuro), var(--morado-medio));
         border-radius: 15px;
@@ -60,8 +62,8 @@
     }
 
     /* ================================
-           TARJETAS DE ESTADÍSTICAS
-        ================================ */
+               TARJETAS DE ESTADÍSTICAS
+            ================================ */
     .stat-card {
         border: none;
         border-radius: 15px;
@@ -128,8 +130,8 @@
     }
 
     /* ================================
-           TARJETAS DE CONTENIDO
-        ================================ */
+               TARJETAS DE CONTENIDO
+            ================================ */
     .content-card {
         border: none;
         border-radius: 15px;
@@ -156,8 +158,8 @@
     }
 
     /* ================================
-           ACCESOS RÁPIDOS
-        ================================ */
+               ACCESOS RÁPIDOS
+            ================================ */
     .acceso-rapido {
         display: flex;
         flex-direction: column;
@@ -199,15 +201,177 @@
         }
 
     /* ================================
-           LÍNEA DORADA
-        ================================ */
+               LÍNEA DORADA
+            ================================ */
     .linea-dorada {
         height: 3px;
         background: linear-gradient(90deg, transparent, var(--dorado), transparent);
         margin: 5px 0 15px 0;
         border-radius: 2px;
     }
+
+    /* ================================
+               CARRUSEL DE GRÁFICAS
+            ================================ */
+    .carrusel-header {
+        justify-content: space-between;
+    }
+
+    .carrusel-titulo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: opacity 0.25s;
+    }
+
+    .carrusel-flechas {
+        display: flex;
+        gap: 6px;
+    }
+
+    .btn-flecha {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.35);
+        background: rgba(255,255,255,0.12);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        padding: 0;
+    }
+
+        .btn-flecha:hover {
+            background: var(--dorado);
+            border-color: var(--dorado);
+            color: var(--morado-oscuro);
+        }
+
+    .carrusel-ventana {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .carrusel-pista {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .carrusel-slide {
+        flex: 0 0 100%;
+        min-width: 0;
+        padding: 0 4px;
+    }
+
+    .slide-descripcion {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 10px;
+        min-height: 18px;
+    }
+
+        .slide-descripcion strong {
+            color: var(--morado-oscuro);
+            font-size: 14px;
+        }
+
+    .contenedor-grafica {
+        position: relative;
+        height: 300px;
+    }
+
+    .carrusel-puntos {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
+
+    .punto {
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #aaa;
+        cursor: pointer;
+        padding: 4px 2px;
+        letter-spacing: 0.3px;
+        transition: color 0.2s;
+    }
+
+        .punto::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s;
+        }
+
+        .punto.activo {
+            color: var(--morado-oscuro);
+        }
+
+            .punto.activo::before {
+                width: 24px;
+                border-radius: 5px;
+                background: linear-gradient(90deg, var(--morado-medio), var(--dorado));
+            }
+
+        .punto:hover {
+            color: var(--morado-medio);
+        }
+
+    .sin-datos-dash {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+        font-size: 13px;
+    }
+
+    /* ================================
+               HISTORIAL DE CONSTANCIAS
+            ================================ */
+    .tabla-historial thead th {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        padding: 10px 12px;
+        border: none;
+        text-transform: uppercase;
+    }
+
+    .tabla-historial tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        font-size: 13px;
+    }
+
+    .link-ver-todas {
+        margin-left: auto;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--dorado-claro);
+        text-decoration: none;
+        letter-spacing: 0;
+    }
+
+        .link-ver-todas:hover {
+            color: white;
+        }
 </style>
+
 
 @* Encabezado del Dashboard *@
 <div class="dashboard-header">
@@ -262,19 +426,82 @@
 
 </div>
 
-@* Gráfica y accesos rápidos *@
+
+@* Carrusel de gráficas y accesos rápidos *@
 <div class="row g-4">
 
-    @* Gráfica de miembros por mes *@
+    @* Carrusel de gráficas *@
     <div class="col-lg-8">
         <div class="content-card">
-            <div class="content-card-header">
-                <i class="bi bi-bar-chart-fill"></i>
-                Crecimiento de Membresías
+            <div class="content-card-header carrusel-header">
+                <div class="carrusel-titulo" id="carruselTitulo">
+                    <i class="bi bi-bar-chart-fill"></i>
+                    <span>Crecimiento de Membresías</span>
+                </div>
+                <div class="carrusel-flechas">
+                    <button type="button" class="btn-flecha" id="btnAnterior" title="Gráfica anterior">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button type="button" class="btn-flecha" id="btnSiguiente" title="Gráfica siguiente">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
             </div>
             <div class="content-card-body">
                 <div class="linea-dorada"></div>
-                <canvas id="graficaMiembros" height="100"></canvas>
+
+                <div class="carrusel-ventana" id="carruselVentana">
+                    <div class="carrusel-pista" id="carruselPista">
+
+                        @* Slide 1: miembros registrados por mes *@
+                        <div class="carrusel-slide"
+                             data-titulo="Crecimiento de Membresías" data-icono="bi-bar-chart-fill">
+                            <div class="slide-descripcion">
+                                Miembros registrados por mes en @DateTime.Now.Year
+                            </div>
+                            <div class="contenedor-grafica">
+                                <canvas id="graficaMiembros"></canvas>
+                            </div>
+                        </div>
+
+                        @* Slide 2: miembros por área de servicio *@
+                        <div class="carrusel-slide"
+                             data-titulo="Miembros por Área de Servicio" data-icono="bi-diagram-3-fill">
+                            <div class="slide-descripcion">
+                                Distribución de los miembros activos en cada área
+                            </div>
+                            @if ((ViewBag.CantidadAreasGrafica ?? 0) > 0)
+                            {
+                                <div class="contenedor-grafica">
+                                    <canvas id="graficaAreas"></canvas>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="sin-datos-dash">No hay miembros activos registrados.</div>
+                            }
+                        </div>
+
+                        @* Slide 3: constancias emitidas por mes *@
+                        <div class="carrusel-slide"
+                             data-titulo="Constancias Emitidas" data-icono="bi-file-earmark-check-fill">
+                            <div class="slide-descripcion">
+                                <strong>@ViewBag.TotalConstanciasAnio</strong>
+                                constancia(s) emitida(s) en @DateTime.Now.Year
+                            </div>
+                            <div class="contenedor-grafica">
+                                <canvas id="graficaConstancias"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="carrusel-puntos" id="carruselPuntos">
+                    <button type="button" class="punto activo" data-indice="0">Miembros</button>
+                    <button type="button" class="punto" data-indice="1">Áreas</button>
+                    <button type="button" class="punto" data-indice="2">Constancias</button>
+                </div>
             </div>
         </div>
     </div>
@@ -313,6 +540,18 @@
                             <span>Ver Bitácora</span>
                         </a>
                     </div>
+                    <div class="col-6">
+                        <a href="/NucleoFamiliar/Crear" class="acceso-rapido">
+                            <i class="bi bi-house-add-fill"></i>
+                            <span>Nueva Familia</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/NucleoFamiliar" class="acceso-rapido">
+                            <i class="bi bi-house-heart-fill"></i>
+                            <span>Ver Familias</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -320,47 +559,224 @@
 
 </div>
 
+@* Historial de últimas constancias *@
+<div class="row g-4 mt-1">
+    <div class="col-12">
+        <div class="content-card">
+            <div class="content-card-header">
+                <i class="bi bi-clock-history"></i>
+                Últimas Constancias Emitidas
+                <a href="/Constancias" class="link-ver-todas">
+                    Ver todas <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="content-card-body">
+                <div class="linea-dorada"></div>
+                @if (lstUltimasConstancias.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="tabla-historial table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Miembro</th>
+                                    <th>DPI</th>
+                                    <th>Tipo</th>
+                                    <th>Emitida por</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var gConstancia in lstUltimasConstancias)
+                                {
+                                    <tr>
+                                        <td>@gConstancia.dCmp_Fecha_Emision_Constancia.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>
+                                            <strong style="color: var(--morado-oscuro);">
+                                                @(gConstancia.Miembro != null
+                                                    ? gConstancia.Miembro.sCmp_Primer_Nombre_Miembro + " " + gConstancia.Miembro.sCmp_Primer_Apellido_Miembro
+                                                    : "-")
+                                            </strong>
+                                        </td>
+                                        <td>@gConstancia.sFk_Dpi_Miembro</td>
+                                        <td>@gConstancia.sCmp_Tipo_Constancia</td>
+                                        <td>@(gConstancia.Usuario?.sCmp_Nombre_Usuario ?? "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="sin-datos-dash" style="padding: 30px;">Todavía no se han emitido constancias.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctx = document.getElementById('graficaMiembros').getContext('2d');
-        const graficaMiembros = new Chart(ctx, {
+        // ================================
+        // CONFIGURACIÓN COMÚN DE LAS GRÁFICAS
+        // ================================
+        const sMorado = 'rgba(74, 14, 110, 0.7)';
+        const sMoradoMedio = 'rgba(123, 45, 158, 0.75)';
+        const sVerde = 'rgba(74, 103, 65, 0.75)';
+        const sDorado = '#C9A84C';
+        const lstMeses = @Html.Raw(ViewBag.MesesLabels ?? "['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']");
+
+        function fun_OpcionesBarras(sUnidad, bHorizontal) {
+            const ejeValor = {
+                beginAtZero: true,
+                ticks: { stepSize: 1, precision: 0 },
+                grid: { color: 'rgba(0,0,0,0.05)' }
+            };
+            const ejeCategoria = { grid: { display: false } };
+            return {
+                indexAxis: bHorizontal ? 'y' : 'x',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(c) {
+                                return ' ' + (bHorizontal ? c.parsed.x : c.parsed.y) + ' ' + sUnidad;
+                            }
+                        }
+                    }
+                },
+                scales: bHorizontal
+                    ? { x: ejeValor, y: ejeCategoria }
+                    : { y: ejeValor, x: ejeCategoria }
+            };
+        }
+
+        const lstGraficas = [];
+
+        // Slide 1: miembros registrados por mes
+        lstGraficas.push(new Chart(document.getElementById('graficaMiembros'), {
             type: 'bar',
             data: {
-                labels: @Html.Raw(ViewBag.MesesLabels ?? "['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']"),
+                labels: lstMeses,
                 datasets: [{
                     label: 'Miembros registrados',
                     data: @Html.Raw(ViewBag.MesesData ?? "[0,0,0,0,0,0,0,0,0,0,0,0]"),
-                    backgroundColor: 'rgba(74, 14, 110, 0.7)',
-                    borderColor: '#C9A84C',
+                    backgroundColor: sMorado,
+                    borderColor: sDorado,
                     borderWidth: 2,
-                    borderRadius: 8,
+                    borderRadius: 8
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        },
-                        grid: {
-                            color: 'rgba(0,0,0,0.05)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
+            options: fun_OpcionesBarras('miembro(s)', false)
+        }));
+
+        // Slide 2: miembros por área de servicio
+        const canvasAreas = document.getElementById('graficaAreas');
+        lstGraficas.push(canvasAreas ? new Chart(canvasAreas, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(ViewBag.AreasLabels ?? "[]"),
+                datasets: [{
+                    label: 'Miembros',
+                    data: @Html.Raw(ViewBag.AreasData ?? "[]"),
+                    backgroundColor: sMoradoMedio,
+                    borderColor: sDorado,
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    maxBarThickness: 22
+                }]
+            },
+            options: fun_OpcionesBarras('miembro(s)', true)
+        }) : null);
+
+        // Slide 3: constancias emitidas por mes
+        lstGraficas.push(new Chart(document.getElementById('graficaConstancias'), {
+            type: 'bar',
+            data: {
+                labels: lstMeses,
+                datasets: [{
+                    label: 'Constancias emitidas',
+                    data: @Html.Raw(ViewBag.ConstanciasData ?? "[0,0,0,0,0,0,0,0,0,0,0,0]"),
+                    backgroundColor: sVerde,
+                    borderColor: sDorado,
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: fun_OpcionesBarras('constancia(s)', false)
+        }));
+
+        // ================================
+        // CARRUSEL DE GRÁFICAS
+        // ================================
+        (function() {
+            const pista = document.getElementById('carruselPista');
+            const ventana = document.getElementById('carruselVentana');
+            const lstSlides = pista.querySelectorAll('.carrusel-slide');
+            const lstPuntos = document.querySelectorAll('#carruselPuntos .punto');
+            const divTitulo = document.getElementById('carruselTitulo');
+            let iActual = 0;
+
+            function fun_Mostrar(iIndice) {
+                const iTotal = lstSlides.length;
+                iActual = (iIndice + iTotal) % iTotal;   // da la vuelta al llegar al final
+
+                pista.style.transform = 'translateX(-' + (iActual * 100) + '%)';
+
+                lstPuntos.forEach(function(p, i) {
+                    p.classList.toggle('activo', i === iActual);
+                });
+
+                // Cambia el título del encabezado con un pequeño desvanecido
+                const slide = lstSlides[iActual];
+                divTitulo.style.opacity = 0;
+                setTimeout(function() {
+                    divTitulo.innerHTML = '';
+                    const icono = document.createElement('i');
+                    icono.className = 'bi ' + slide.dataset.icono;
+                    const texto = document.createElement('span');
+                    texto.textContent = slide.dataset.titulo;
+                    divTitulo.appendChild(icono);
+                    divTitulo.appendChild(texto);
+                    divTitulo.style.opacity = 1;
+                }, 200);
+
+                // Vuelve a animar la gráfica que entra
+                const grafica = lstGraficas[iActual];
+                if (grafica) {
+                    setTimeout(function() {
+                        grafica.reset();
+                        grafica.update();
+                    }, 250);
                 }
             }
-        });
+
+            document.getElementById('btnAnterior').addEventListener('click', function() { fun_Mostrar(iActual - 1); });
+            document.getElementById('btnSiguiente').addEventListener('click', function() { fun_Mostrar(iActual + 1); });
+
+            lstPuntos.forEach(function(p) {
+                p.addEventListener('click', function() { fun_Mostrar(parseInt(p.dataset.indice)); });
+            });
+
+            // Flechas del teclado
+            document.addEventListener('keydown', function(e) {
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+                if (e.key === 'ArrowLeft') fun_Mostrar(iActual - 1);
+                if (e.key === 'ArrowRight') fun_Mostrar(iActual + 1);
+            });
+
+            // Deslizar con el dedo en celular o tablet
+            let iInicioX = null;
+            ventana.addEventListener('touchstart', function(e) { iInicioX = e.touches[0].clientX; }, { passive: true });
+            ventana.addEventListener('touchend', function(e) {
+                if (iInicioX === null) return;
+                const iDiferencia = e.changedTouches[0].clientX - iInicioX;
+                if (Math.abs(iDiferencia) > 50) fun_Mostrar(iActual + (iDiferencia < 0 ? 1 : -1));
+                iInicioX = null;
+            }, { passive: true });
+        })();
     </script>
 }
