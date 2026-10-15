@@ -294,9 +294,9 @@ namespace SistemaWebElimCentral.Controllers.Membresias
 
                 // Bitacora
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Constancias",
                     "Generacion de constancia para miembro: " + sDpi,
                     true);
 

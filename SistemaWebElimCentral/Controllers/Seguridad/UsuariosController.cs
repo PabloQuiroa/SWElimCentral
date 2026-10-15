@@ -126,9 +126,9 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
 
                 // Bitácora
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Usuarios",
                     "Creacion de usuario: " + sUsername,
                     true);
 
@@ -178,9 +178,9 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Usuarios",
                     "Edicion de usuario: " + gUsuario.sCmp_Username_Usuario,
                     true);
 
@@ -216,6 +216,13 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
             gUsuario.bCmp_Estado_Usuario = !gUsuario.bCmp_Estado_Usuario;
             _context.SaveChanges();
 
+            var gBitacora = new Cls_Bitacora_Controlador(_context);
+            gBitacora.RegistrarAccionModulo(HttpContext,
+                Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
+                "Usuarios",
+                (gUsuario.bCmp_Estado_Usuario ? "Activacion" : "Desactivacion") +
+                    " de usuario: " + gUsuario.sCmp_Username_Usuario);
+
             TempData["Exito"] = gUsuario.bCmp_Estado_Usuario
                 ? "Usuario activado exitosamente."
                 : "Usuario desactivado exitosamente.";
@@ -245,6 +252,12 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
 
             gUsuario.iCmp_Intentos_Fallidos_Usuario = 0;
             _context.SaveChanges();
+
+            var gBitacora = new Cls_Bitacora_Controlador(_context);
+            gBitacora.RegistrarAccionModulo(HttpContext,
+                Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
+                "Usuarios",
+                "Desbloqueo de usuario: " + gUsuario.sCmp_Username_Usuario);
 
             TempData["Exito"] = "Usuario desbloqueado exitosamente.";
             return RedirectToAction("Index");
@@ -302,9 +315,9 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Usuarios",
                     "Cambio de contrase&ntilde;a para usuario ID: " + iIdUsuario,
                     true);
 

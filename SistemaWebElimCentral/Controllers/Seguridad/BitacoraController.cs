@@ -32,13 +32,15 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
             string sFecha = "",
             string sFechaFin = "",
             string sBuscar = "",
-            int iIdUsuario = 0)
+            int iIdUsuario = 0,
+            int iIdAplicacion = 0)
         {
             if (!VerificarSesion())
                 return RedirectToAction("Index", "Login");
 
             var gBitacora = _context.Bitacoras
                 .Include(b => b.Usuario)
+                .Include(b => b.Aplicacion)
                 .AsQueryable();
 
             // Filtro por fecha inicio
@@ -66,10 +68,20 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
             if (iIdUsuario > 0)
                 gBitacora = gBitacora.Where(b => b.iFk_Id_Usuario == iIdUsuario);
 
+            // Filtro por módulo (-1 = acciones generales del sistema, como inicio de sesión)
+            if (iIdAplicacion > 0)
+                gBitacora = gBitacora.Where(b => b.iFk_Id_Aplicacion == iIdAplicacion);
+            else if (iIdAplicacion == -1)
+                gBitacora = gBitacora.Where(b => b.iFk_Id_Aplicacion == null);
+
             ViewBag.Fecha = sFecha;
             ViewBag.FechaFin = sFechaFin;
             ViewBag.Buscar = sBuscar;
             ViewBag.IdUsuario = iIdUsuario;
+            ViewBag.IdAplicacion = iIdAplicacion;
+            ViewBag.Aplicaciones = _context.Aplicaciones
+                .OrderBy(a => a.iPk_Id_Aplicacion)
+                .ToList();
             ViewBag.Usuarios = _context.Usuarios
                 .Where(u => u.bCmp_Estado_Usuario == true)
                 .OrderBy(u => u.sCmp_Nombre_Usuario)

@@ -47,6 +47,10 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
 
                 if (bBloqueado)
                 {
+                    var gBitacoraBloqueado = new Cls_Bitacora_Controlador(_context);
+                    gBitacoraBloqueado.RegistrarIntentoFallido(HttpContext, gUsuario.iPk_Id_Usuario,
+                        "Intento de inicio de sesion con usuario bloqueado");
+
                     ViewBag.Error = "El usuario está bloqueado. Contacte al administrador.";
                     return View();
                 }
@@ -81,6 +85,11 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                     gUsuario.iCmp_Intentos_Fallidos_Usuario++;
                     _context.SaveChanges();
 
+                    var gBitacoraFallo = new Cls_Bitacora_Controlador(_context);
+                    gBitacoraFallo.RegistrarIntentoFallido(HttpContext, gUsuario.iPk_Id_Usuario,
+                        "Intento de inicio de sesion fallido (" +
+                        gUsuario.iCmp_Intentos_Fallidos_Usuario + " de 3)");
+
                     if (gUsuario.iCmp_Intentos_Fallidos_Usuario >= 3)
                     {
                         var gBloqueo = new Mdl_Bloqueo_Usuario
@@ -91,6 +100,9 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                         };
                         _context.BloqueosUsuario.Add(gBloqueo);
                         _context.SaveChanges();
+
+                        gBitacoraFallo.RegistrarIntentoFallido(HttpContext, gUsuario.iPk_Id_Usuario,
+                            "Usuario bloqueado por exceso de intentos fallidos");
 
                         ViewBag.Error = "Usuario bloqueado por múltiples intentos incorrectos.";
                     }

@@ -84,9 +84,9 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Áreas de Servicio",
                     "Creacion de area de servicio: " + sNombreArea,
                     true);
 
@@ -134,9 +134,9 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Áreas de Servicio",
                     "Edicion de area de servicio: " + sNombreArea,
                     true);
 
@@ -163,6 +163,13 @@ namespace SistemaWebElimCentral.Controllers.Membresias
 
             gArea.bCmp_Estado_Area = !gArea.bCmp_Estado_Area;
             _context.SaveChanges();
+
+            var gBitacora = new Cls_Bitacora_Controlador(_context);
+            gBitacora.RegistrarAccionModulo(HttpContext,
+                Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
+                "Áreas de Servicio",
+                (gArea.bCmp_Estado_Area ? "Activacion" : "Desactivacion") +
+                    " de area de servicio: " + gArea.sCmp_Nombre_Area);
 
             TempData["Exito"] = gArea.bCmp_Estado_Area
                 ? "&Aacute;rea activada exitosamente."

@@ -121,6 +121,23 @@
         border: 1px solid rgba(74,14,110,0.2);
     }
 
+    .modulo-badge {
+        background: var(--crema);
+        color: var(--morado-oscuro);
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid rgba(201,168,76,0.5);
+        white-space: nowrap;
+    }
+
+    .modulo-sistema {
+        background: #f0f0f0;
+        color: #777;
+        border-color: #ddd;
+    }
+
     .sin-resultados {
         text-align: center;
         padding: 50px;
@@ -162,7 +179,7 @@
     </p>
     <form method="get" action="/Bitacora">
         <div class="row g-3">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
                     Fecha Inicio
                 </label>
@@ -171,7 +188,7 @@
                        class="form-control"
                        value="@ViewBag.Fecha" />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
                     Fecha Fin
                 </label>
@@ -191,6 +208,22 @@
                         <option value="@usuario.iPk_Id_Usuario"
                                 selected="@(ViewBag.IdUsuario == usuario.iPk_Id_Usuario)">
                             @usuario.sCmp_Nombre_Usuario
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
+                    M&oacute;dulo
+                </label>
+                <select name="iIdAplicacion" class="form-select">
+                    <option value="0">Todos los m&oacute;dulos</option>
+                    <option value="-1" selected="@(ViewBag.IdAplicacion == -1)">Sistema (sesiones)</option>
+                    @foreach (var aplicacion in (List<SistemaWebElimCentral.Models.Seguridad.Mdl_Aplicacion>)ViewBag.Aplicaciones)
+                    {
+                        <option value="@aplicacion.iPk_Id_Aplicacion"
+                                selected="@(ViewBag.IdAplicacion == aplicacion.iPk_Id_Aplicacion)">
+                            @aplicacion.sCmp_Nombre_Aplicacion
                         </option>
                     }
                 </select>
@@ -241,6 +274,7 @@
                         <th>#</th>
                         <th>Fecha y Hora</th>
                         <th>Usuario</th>
+                        <th>M&oacute;dulo</th>
                         <th>Acci&oacute;n</th>
                         <th>IP</th>
                         <th>Estado</th>
@@ -267,6 +301,18 @@
                                         <i class="bi bi-person-fill me-1"></i>
                                         @registro.Usuario.sCmp_Nombre_Usuario
                                     </span>
+                                }
+                            </td>
+                            <td>
+                                @if (registro.Aplicacion != null)
+                                {
+                                    <span class="modulo-badge">
+                                        @registro.Aplicacion.sCmp_Nombre_Aplicacion
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="modulo-badge modulo-sistema">Sistema</span>
                                 }
                             </td>
                             <td>

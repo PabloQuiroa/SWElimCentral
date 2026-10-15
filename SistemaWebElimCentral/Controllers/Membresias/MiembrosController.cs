@@ -178,9 +178,9 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Miembros",
                     "Registro de nuevo miembro: " + gMiembro.sPk_Dpi_Miembro +
                     " - " + gMiembro.sCmp_Primer_Nombre_Miembro +
                     " " + gMiembro.sCmp_Primer_Apellido_Miembro,
@@ -281,9 +281,9 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Miembros",
                     "Edicion de miembro: " + gMiembro.sPk_Dpi_Miembro,
                     true);
 
@@ -317,6 +317,13 @@ namespace SistemaWebElimCentral.Controllers.Membresias
 
             gMiembro.bCmp_Estado_Miembro = !gMiembro.bCmp_Estado_Miembro;
             _context.SaveChanges();
+
+            var gBitacora = new Cls_Bitacora_Controlador(_context);
+            gBitacora.RegistrarAccionModulo(HttpContext,
+                Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
+                "Miembros",
+                (gMiembro.bCmp_Estado_Miembro ? "Activacion" : "Desactivacion") +
+                    " de miembro: " + gMiembro.sPk_Dpi_Miembro);
 
             TempData["Exito"] = gMiembro.bCmp_Estado_Miembro
                 ? "Miembro activado exitosamente."

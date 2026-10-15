@@ -60,6 +60,22 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
             }
         }
 
+        // Registra una acción indicando el nombre del módulo (tal como está en Tbl_Aplicacion)
+        public void RegistrarAccionModulo(
+            HttpContext httpContext,
+            int iIdUsuario,
+            string sNombreAplicacion,
+            string sAccion,
+            bool bEstado = true)
+        {
+            int? iIdAplicacion = _context.Aplicaciones
+                .Where(a => a.sCmp_Nombre_Aplicacion == sNombreAplicacion)
+                .Select(a => (int?)a.iPk_Id_Aplicacion)
+                .FirstOrDefault();
+
+            RegistrarAccion(httpContext, iIdUsuario, iIdAplicacion, sAccion, bEstado);
+        }
+
         public void RegistrarInicioSesion(HttpContext httpContext, int iIdUsuario)
         {
             RegistrarAccion(httpContext, iIdUsuario, null, "Ingreso al sistema", true);
@@ -67,7 +83,13 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
 
         public void RegistrarCierreSesion(HttpContext httpContext, int iIdUsuario)
         {
-            RegistrarAccion(httpContext, iIdUsuario, null, "Cierre de sesión", false);
+            RegistrarAccion(httpContext, iIdUsuario, null, "Cierre de sesión", true);
+        }
+
+        // Intentos fallidos de inicio de sesión (se marcan como "Error" en la bitácora)
+        public void RegistrarIntentoFallido(HttpContext httpContext, int iIdUsuario, string sMotivo)
+        {
+            RegistrarAccion(httpContext, iIdUsuario, null, sMotivo, false);
         }
 
         public IQueryable<Mdl_Bitacora> ObtenerBitacora()

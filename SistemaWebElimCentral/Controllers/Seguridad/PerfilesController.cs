@@ -96,9 +96,9 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Perfiles",
                     "Creacion de perfil: " + sNombrePerfil,
                     true);
 
@@ -189,9 +189,9 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 _context.SaveChanges();
 
                 var gBitacora = new Cls_Bitacora_Controlador(_context);
-                gBitacora.RegistrarAccion(HttpContext,
+                gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
-                    null,
+                    "Perfiles",
                     "Actualizacion de permisos para perfil ID: " + iIdPerfil,
                     true);
 
@@ -218,6 +218,13 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
 
             gPerfil.bCmp_Estado_Perfil = !gPerfil.bCmp_Estado_Perfil;
             _context.SaveChanges();
+
+            var gBitacora = new Cls_Bitacora_Controlador(_context);
+            gBitacora.RegistrarAccionModulo(HttpContext,
+                Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
+                "Perfiles",
+                (gPerfil.bCmp_Estado_Perfil ? "Activacion" : "Desactivacion") +
+                    " de perfil: " + gPerfil.sCmp_Nombre_Perfil);
 
             TempData["Exito"] = gPerfil.bCmp_Estado_Perfil
                 ? "Perfil activado exitosamente."
