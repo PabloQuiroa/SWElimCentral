@@ -57,15 +57,23 @@ namespace SistemaWebElimCentral.Controllers.Membresias
             if (!VerificarSesion())
                 return RedirectToAction("Index", "Login");
 
+            // Si se entra sin DPI (por ejemplo, desde el acceso rápido del Dashboard),
+            // se envía a Miembros para que elija a quién generarle la constancia
             if (string.IsNullOrEmpty(id))
-                return NotFound();
+            {
+                TempData["Exito"] = "Busque al miembro y use el botón de constancia para generarla.";
+                return RedirectToAction("Index", "Miembros");
+            }
 
             var gMiembro = _context.Miembros
                 .Include(m => m.Area)
                 .FirstOrDefault(m => m.sPk_Dpi_Miembro == id);
 
             if (gMiembro == null)
-                return NotFound();
+            {
+                TempData["Error"] = "No se encontró un miembro con ese DPI.";
+                return RedirectToAction("Index", "Miembros");
+            }
 
             return View(gMiembro);
         }
@@ -82,7 +90,10 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 .FirstOrDefault(m => m.sPk_Dpi_Miembro == sDpi);
 
             if (gMiembro == null)
-                return NotFound();
+            {
+                TempData["Error"] = "No se encontró un miembro con ese DPI.";
+                return RedirectToAction("Index", "Miembros");
+            }
 
             try
             {
@@ -160,10 +171,11 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                             .SetTextAlignment(TextAlignment.CENTER)
                             .SetMarginBottom(5));
 
-                        // Fecha
+                        // Fecha (el mes siempre en español, aunque el servidor esté en inglés)
+                        var gCulturaGt = new System.Globalization.CultureInfo("es-GT");
                         document.Add(new Paragraph(
                             "Guatemala, " + DateTime.Now.ToString("dd") + " de " +
-                            DateTime.Now.ToString("MMMM") + " de " +
+                            DateTime.Now.ToString("MMMM", gCulturaGt) + " de " +
                             DateTime.Now.ToString("yyyy"))
                             .SetFont(fuenteNormal)
                             .SetFontSize(11)

@@ -432,9 +432,11 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 return RedirectToAction("Detalle", new { id = iIdGrupo });
             }
 
-            if (string.IsNullOrWhiteSpace(sNombreHijo))
+            string? sErrorNombreHijo = Cls_Validacion_Controlador.ValidarNombre(
+                sNombreHijo, "nombre completo del hijo", true, 200);
+            if (sErrorNombreHijo != null)
             {
-                TempData["Error"] = "El nombre completo del hijo es obligatorio.";
+                TempData["Error"] = sErrorNombreHijo;
                 return RedirectToAction("Detalle", new { id = iIdGrupo });
             }
 
@@ -575,8 +577,10 @@ namespace SistemaWebElimCentral.Controllers.Membresias
         private string? fun_ValidarGrupo(string sNombreFamilia, string? sDpiPadre,
             string? sDpiMadre, int? iIdGrupoActual)
         {
-            if (string.IsNullOrWhiteSpace(sNombreFamilia))
-                return "El nombre de la familia es obligatorio.";
+            string? sErrorNombre = Cls_Validacion_Controlador.ValidarTexto(
+                sNombreFamilia, "nombre de la familia", true, 100);
+            if (sErrorNombre != null)
+                return sErrorNombre;
 
             if (string.IsNullOrEmpty(sDpiPadre) && string.IsNullOrEmpty(sDpiMadre))
                 return "Debe seleccionar al menos a uno de los cónyuges.";

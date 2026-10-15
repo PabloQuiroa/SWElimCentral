@@ -1,7 +1,7 @@
 ﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
 @model IEnumerable<SistemaWebElimCentral.Models.Seguridad.Mdl_Bitacora>
 @{
-    ViewData["Title"] = "Bit&aacute;cora";
+    ViewData["Title"] = "Bitácora";
 }
 
 <style>
@@ -165,7 +165,7 @@
 @* Encabezado *@
 <div class="page-header">
     <p class="page-header-titulo">
-        <i class="bi bi-journal-text me-2"></i>Bit&aacute;cora del Sistema
+        <i class="bi bi-journal-text me-2"></i>Bitácora del Sistema
     </p>
     <small style="color: var(--dorado-claro); font-size: 12px;">
         Registro de todas las acciones realizadas en el sistema
@@ -175,7 +175,7 @@
 @* Filtros *@
 <div class="filtros-card">
     <p class="filtros-titulo">
-        <i class="bi bi-funnel-fill me-2"></i>Filtros de B&uacute;squeda
+        <i class="bi bi-funnel-fill me-2"></i>Filtros de Búsqueda
     </p>
     <form method="get" action="/Bitacora">
         <div class="row g-3">
@@ -214,10 +214,10 @@
             </div>
             <div class="col-md-2">
                 <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
-                    M&oacute;dulo
+                    Módulo
                 </label>
                 <select name="iIdAplicacion" class="form-select">
-                    <option value="0">Todos los m&oacute;dulos</option>
+                    <option value="0">Todos los módulos</option>
                     <option value="-1" selected="@(ViewBag.IdAplicacion == -1)">Sistema (sesiones)</option>
                     @foreach (var aplicacion in (List<SistemaWebElimCentral.Models.Seguridad.Mdl_Aplicacion>)ViewBag.Aplicaciones)
                     {
@@ -230,7 +230,7 @@
             </div>
             <div class="col-md-3">
                 <label style="font-size: 12px; font-weight: 600; color: var(--morado-oscuro);">
-                    Buscar acci&oacute;n
+                    Buscar acción
                 </label>
                 <input type="text"
                        name="sBuscar"
@@ -261,7 +261,7 @@
     <div class="tabla-header">
         <span><i class="bi bi-table me-2"></i>Registros de Actividad</span>
         <span style="font-size: 12px; color: var(--dorado-claro);">
-            @Model.Count() registro(s) — mostrando m&aacute;ximo 500
+            @Model.Count() registro(s) — mostrando máximo 500
         </span>
     </div>
 
@@ -274,8 +274,8 @@
                         <th>#</th>
                         <th>Fecha y Hora</th>
                         <th>Usuario</th>
-                        <th>M&oacute;dulo</th>
-                        <th>Acci&oacute;n</th>
+                        <th>Módulo</th>
+                        <th>Acción</th>
                         <th>IP</th>
                         <th>Estado</th>
                     </tr>
@@ -351,9 +351,9 @@
         <div class="sin-resultados">
             <i class="bi bi-journal-x"></i>
             <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
-                No hay registros en la bit&aacute;cora
+                No hay registros en la bitácora
             </p>
-            <small>Los registros de actividad aparecer&aacute;n aqu&iacute;</small>
+            <small>Los registros de actividad aparecerán aquí</small>
         </div>
     }
 </div>

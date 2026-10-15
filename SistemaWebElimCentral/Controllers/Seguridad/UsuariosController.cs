@@ -85,16 +85,27 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                     return View();
                 }
 
+                string? sErrorDatos = Cls_Validacion_Controlador.PrimerError(
+                    Cls_Validacion_Controlador.ValidarNombre(sNombreUsuario, "nombre completo", true, 100),
+                    Cls_Validacion_Controlador.ValidarUsuario(sUsername),
+                    Cls_Validacion_Controlador.ValidarCorreo(sCorreo));
+                if (sErrorDatos != null)
+                {
+                    ViewBag.Error = sErrorDatos;
+                    CargarListas();
+                    return View();
+                }
+
                 if (sContrasena != sConfirmarContrasena)
                 {
-                    ViewBag.Error = "Las contrase&ntilde;as no coinciden.";
+                    ViewBag.Error = "Las contraseñas no coinciden.";
                     CargarListas();
                     return View();
                 }
 
                 if (sContrasena.Length < 8)
                 {
-                    ViewBag.Error = "La contrase&ntilde;a debe tener al menos 8 caracteres.";
+                    ViewBag.Error = "La contraseña debe tener al menos 8 caracteres.";
                     CargarListas();
                     return View();
                 }
@@ -171,6 +182,16 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 if (gUsuario == null)
                     return NotFound();
 
+                string? sErrorDatos = Cls_Validacion_Controlador.PrimerError(
+                    Cls_Validacion_Controlador.ValidarNombre(sNombreUsuario, "nombre completo", true, 100),
+                    Cls_Validacion_Controlador.ValidarCorreo(sCorreo));
+                if (sErrorDatos != null)
+                {
+                    ViewBag.Error = sErrorDatos;
+                    CargarListas(iIdPerfil);
+                    return View(gUsuario);
+                }
+
                 gUsuario.sCmp_Nombre_Usuario = sNombreUsuario.Trim();
                 gUsuario.sCmp_Correo_Usuario = sCorreo?.Trim();
                 gUsuario.iFk_Id_Perfil = iIdPerfil;
@@ -191,7 +212,7 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
             {
                 ViewBag.Error = "Error al actualizar: " + ex.Message;
                 CargarListas(iIdPerfil);
-                return View();
+                return View(_context.Usuarios.Find(iIdUsuario));
             }
         }
 
@@ -290,14 +311,14 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
             {
                 if (sNuevaContrasena != sConfirmarContrasena)
                 {
-                    ViewBag.Error = "Las contrase&ntilde;as no coinciden.";
+                    ViewBag.Error = "Las contraseñas no coinciden.";
                     ViewBag.IdUsuario = iIdUsuario;
                     return View();
                 }
 
                 if (sNuevaContrasena.Length < 8)
                 {
-                    ViewBag.Error = "La contrase&ntilde;a debe tener al menos 8 caracteres.";
+                    ViewBag.Error = "La contraseña debe tener al menos 8 caracteres.";
                     ViewBag.IdUsuario = iIdUsuario;
                     return View();
                 }
@@ -318,15 +339,15 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 gBitacora.RegistrarAccionModulo(HttpContext,
                     Cls_Sesion_Controlador.ObtenerIdUsuario(HttpContext.Session).Value,
                     "Usuarios",
-                    "Cambio de contrase&ntilde;a para usuario ID: " + iIdUsuario,
+                    "Cambio de contraseña para usuario ID: " + iIdUsuario,
                     true);
 
-                TempData["Exito"] = "Contrase&ntilde;a cambiada exitosamente.";
+                TempData["Exito"] = "Contraseña cambiada exitosamente.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error al cambiar la contrase&ntilde;a: " + ex.Message;
+                ViewBag.Error = "Error al cambiar la contraseña: " + ex.Message;
                 ViewBag.IdUsuario = iIdUsuario;
                 return View();
             }

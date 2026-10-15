@@ -155,6 +155,14 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 gMiembro.sCmp_Telefono_Miembro = gMiembro.sCmp_Telefono_Miembro?.Trim();
                 gMiembro.sCmp_Correo_Miembro = gMiembro.sCmp_Correo_Miembro?.Trim();
 
+                string? sErrorValidacion = fun_ValidarMiembro(gMiembro);
+                if (sErrorValidacion != null)
+                {
+                    ViewBag.Error = sErrorValidacion;
+                    CargarListas();
+                    return View(gMiembro);
+                }
+
                 if (_context.Miembros.Any(m => m.sPk_Dpi_Miembro == gMiembro.sPk_Dpi_Miembro))
                 {
                     ViewBag.Error = "Ya existe un miembro registrado con ese DPI.";
@@ -249,6 +257,14 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 if (gMiembroExistente == null)
                     return NotFound();
 
+                string? sErrorValidacion = fun_ValidarMiembro(gMiembro);
+                if (sErrorValidacion != null)
+                {
+                    ViewBag.Error = sErrorValidacion;
+                    CargarListas();
+                    return View(gMiembro);
+                }
+
                 if (fFoto != null && fFoto.Length > 0)
                 {
                     string sCarpeta = Path.Combine(Directory.GetCurrentDirectory(),
@@ -340,6 +356,34 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 : "Miembro desactivado exitosamente.";
 
             return RedirectToAction("Index");
+        }
+
+        // Valida caracteres y fechas de un miembro. Devuelve null si todo está bien.
+        private string? fun_ValidarMiembro(Mdl_Miembro gMiembro)
+        {
+            DateTime dNacimiento = gMiembro.dCmp_Fecha_Nacimiento_Miembro;
+
+            return Cls_Validacion_Controlador.PrimerError(
+                Cls_Validacion_Controlador.ValidarDigitos(gMiembro.sPk_Dpi_Miembro, "DPI", 13, true),
+                Cls_Validacion_Controlador.ValidarNombre(gMiembro.sCmp_Primer_Nombre_Miembro, "primer nombre", true),
+                Cls_Validacion_Controlador.ValidarNombre(gMiembro.sCmp_Segundo_Nombre_Miembro, "segundo nombre"),
+                Cls_Validacion_Controlador.ValidarNombre(gMiembro.sCmp_Primer_Apellido_Miembro, "primer apellido", true),
+                Cls_Validacion_Controlador.ValidarNombre(gMiembro.sCmp_Segundo_Apellido_Miembro, "segundo apellido"),
+                Cls_Validacion_Controlador.ValidarDigitos(gMiembro.sCmp_Telefono_Miembro, "teléfono", 8),
+                Cls_Validacion_Controlador.ValidarCorreo(gMiembro.sCmp_Correo_Miembro),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Direccion_Miembro, "dirección", false, 250),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Profesion_Miembro, "profesión", false, 100),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Empresa_Miembro, "empresa", false, 100),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Direccion_Trabajo_Miembro, "dirección de trabajo", false, 250),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Iglesia_Conversion_Miembro, "iglesia de conversión", false, 150),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Iglesia_Bautismo_Miembro, "iglesia de bautismo", false, 150),
+                Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Privilegio_Miembro, "privilegio", false, 100),
+                // Fechas: nacimiento entre 1900 y hoy; las demás, entre el nacimiento y hoy
+                Cls_Validacion_Controlador.ValidarFecha(dNacimiento, "fecha de nacimiento", true),
+                Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Conversion_Miembro, "fecha de conversión", false, dNacimiento),
+                Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Bautismo_Agua_Miembro, "fecha de bautismo en agua", false, dNacimiento),
+                Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Bautismo_Espiritu_Miembro, "fecha de bautismo en el Espíritu", false, dNacimiento),
+                Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Membresia_Miembro, "fecha de membresía", false, dNacimiento));
         }
 
         private void CargarListas()

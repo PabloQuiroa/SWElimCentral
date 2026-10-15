@@ -1,7 +1,7 @@
 ﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
 @model IEnumerable<SistemaWebElimCentral.Models.Membresias.Mdl_Area_Servicio>
 @{
-    ViewData["Title"] = "Areas de Servicio";
+    ViewData["Title"] = "Áreas de Servicio";
 }
 
 <style>
@@ -184,15 +184,15 @@
 <div class="page-header">
     <div>
         <p class="page-header-titulo">
-            <i class="bi bi-diagram-3-fill me-2"></i>areas de Servicio
+            <i class="bi bi-diagram-3-fill me-2"></i>Áreas de Servicio
         </p>
         <small style="color: var(--dorado-claro); font-size: 12px;">
-            Gestion de ministerios y areas de servicio
+            Gestión de ministerios y áreas de servicio
         </small>
     </div>
     <a href="/Areas/Crear" class="btn-nuevo">
         <i class="bi bi-plus-circle-fill"></i>
-        Nueva area
+        Nueva área
     </a>
 </div>
 
@@ -218,9 +218,9 @@
 
 <div class="tabla-card">
     <div class="tabla-header">
-        <span><i class="bi bi-table me-2"></i>Listado de areas</span>
+        <span><i class="bi bi-table me-2"></i>Listado de áreas</span>
         <span style="font-size: 12px; color: var(--dorado-claro);">
-            @Model.Count() area(s) registrada(s)
+            @Model.Count() área(s) registrada(s)
         </span>
     </div>
 
@@ -232,8 +232,8 @@
                     <tr>
                         <th>Icono</th>
                         <th>Nombre</th>
-                        <th>Descripci&oacute;n</th>
-                        <th>L&iacute;der</th>
+                        <th>Descripción</th>
+                        <th>Líder</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -254,11 +254,11 @@
                             </td>
                             <td>
                                 @(string.IsNullOrEmpty(area.sCmp_Descripcion_Area)
-                                    ? "Sin descripci&oacute;n" : area.sCmp_Descripcion_Area)
+                                    ? "Sin descripción" : area.sCmp_Descripcion_Area)
                             </td>
                             <td>
                                 @(string.IsNullOrEmpty(area.sCmp_Lider_Area)
-                                    ? "Sin l&iacute;der asignado" : area.sCmp_Lider_Area)
+                                    ? "Sin líder asignado" : area.sCmp_Lider_Area)
                             </td>
                             <td>
                                 @if (area.bCmp_Estado_Area)
@@ -284,7 +284,7 @@
                                                value="@area.iPk_Id_Area" />
                                         <button type="submit"
                                                 class="btn-accion @(area.bCmp_Estado_Area ? "btn-estado-on" : "btn-estado-off")"
-                                                onclick="return confirm('@(area.bCmp_Estado_Area ? "Desactivar" : "Activar") esta area?')">
+                                                onclick="return confirm('@(area.bCmp_Estado_Area ? "Desactivar" : "Activar") esta área?')">
                                             <i class="bi bi-@(area.bCmp_Estado_Area ? "toggle-on" : "toggle-off")"></i>
                                             @(area.bCmp_Estado_Area ? "Desactivar" : "Activar")
                                         </button>
@@ -302,9 +302,9 @@
         <div class="sin-resultados">
             <i class="bi bi-diagram-3"></i>
             <p style="font-family: 'Cinzel', serif; color: var(--morado-oscuro);">
-                No hay areas registradas
+                No hay áreas registradas
             </p>
-            <small>Crea la primera area de servicio</small>
+            <small>Crea la primera área de servicio</small>
         </div>
     }
 </div>

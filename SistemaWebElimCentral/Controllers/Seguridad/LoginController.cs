@@ -31,6 +31,21 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
         {
             try
             {
+                // Validar formato antes de consultar la base de datos
+                if (string.IsNullOrWhiteSpace(sUsername) || string.IsNullOrEmpty(sContrasena))
+                {
+                    ViewBag.Error = "Ingrese su usuario y contraseña.";
+                    return View();
+                }
+
+                if (Cls_Validacion_Controlador.ValidarUsuario(sUsername) != null || sContrasena.Length > 100)
+                {
+                    ViewBag.Error = "El usuario contiene caracteres no permitidos.";
+                    return View();
+                }
+
+                sUsername = sUsername.Trim();
+
                 var gUsuario = _context.Usuarios
                     .FirstOrDefault(u => u.sCmp_Username_Usuario.ToLower() == sUsername.ToLower()
                                      && u.bCmp_Estado_Usuario == true);

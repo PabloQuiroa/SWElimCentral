@@ -199,7 +199,7 @@
             <i class="bi bi-file-earmark-text-fill me-2"></i>Generar Constancia
         </p>
         <small style="color: var(--dorado-claro); font-size: 12px;">
-            Vista previa de la constancia de membres&iacute;a
+            Vista previa de la constancia de membresía
         </small>
     </div>
     <a href="/Miembros" class="btn-regresar">
@@ -228,12 +228,12 @@
                      alt="Logo Elim Central" />
                 <div class="preview-iglesia">IGLESIA DE CRISTO ELIM CENTRAL</div>
                 <div style="font-size: 11px; color: var(--dorado-claro); letter-spacing: 1px;">
-                    DEPARTAMENTO DE MEMBRES&Iacute;AS
+                    DEPARTAMENTO DE MEMBRESÍAS
                 </div>
             </div>
 
             <div class="preview-body">
-                <div class="preview-titulo">CONSTANCIA DE MEMBRES&Iacute;A</div>
+                <div class="preview-titulo">CONSTANCIA DE MEMBRESÍA</div>
                 <div class="preview-fecha">
                     Guatemala, @DateTime.Now.ToString("dd") de
                     @DateTime.Now.ToString("MMMM") de
@@ -254,9 +254,9 @@
                         @Model.sCmp_Primer_Apellido_Miembro
                         @Model.sCmp_Segundo_Apellido_Miembro
                     </span>,
-                    identificado/a con DPI n&uacute;mero
+                    identificado/a con DPI número
                     <strong>@Model.sPk_Dpi_Miembro</strong>,
-                    es miembro activo/a de nuestra congregaci&oacute;n desde el
+                    es miembro activo/a de nuestra congregación desde el
                     <strong>
                         @(Model.dCmp_Fecha_Membresia_Miembro.HasValue
                             ? Model.dCmp_Fecha_Membresia_Miembro.Value.ToString("dd/MM/yyyy")
@@ -267,7 +267,7 @@
                 @if (Model.Area != null)
                 {
                     <p class="preview-texto">
-                        Actualmente sirve en el &aacute;rea de:
+                        Actualmente sirve en el área de:
                         <strong>@Model.Area.sCmp_Nombre_Area</strong>.
                     </p>
                 }
@@ -286,7 +286,7 @@
                                 Firma y Sello
                             </div>
                             <div style="color: #999; font-size: 12px;">
-                                Departamento de Membres&iacute;as
+                                Departamento de Membresías
                             </div>
                         </div>
                     </div>
@@ -296,7 +296,7 @@
 
                 <div class="preview-vigencia">
                     <i class="bi bi-clock me-1"></i>
-                    Esta constancia tiene una vigencia de 60 d&iacute;as a partir de la fecha,
+                    Esta constancia tiene una vigencia de 60 días a partir de la fecha,
                     venciendo el <strong>@DateTime.Now.AddDays(60).ToString("dd/MM/yyyy")</strong>
                 </div>
             </div>
@@ -308,7 +308,7 @@
 
         <div class="info-card">
             <div class="info-titulo">
-                <i class="bi bi-person-fill me-2"></i>Informaci&oacute;n del Miembro
+                <i class="bi bi-person-fill me-2"></i>Información del Miembro
             </div>
             <div class="info-item">
                 <span class="info-label">DPI</span>
@@ -322,9 +322,9 @@
                 </span>
             </div>
             <div class="info-item">
-                <span class="info-label">&Aacute;rea</span>
+                <span class="info-label">Área</span>
                 <span class="info-valor">
-                    @(Model.Area?.sCmp_Nombre_Area ?? "Sin &aacute;rea")
+                    @(Model.Area?.sCmp_Nombre_Area ?? "Sin área")
                 </span>
             </div>
             <div class="info-item">
@@ -343,10 +343,10 @@
             </div>
             <div class="info-item">
                 <span class="info-label">Tipo</span>
-                <span class="info-valor">Membres&iacute;a</span>
+                <span class="info-valor">Membresía</span>
             </div>
             <div class="info-item">
-                <span class="info-label">Fecha de emisi&oacute;n</span>
+                <span class="info-label">Fecha de emisión</span>
                 <span class="info-valor">@DateTime.Now.ToString("dd/MM/yyyy")</span>
             </div>
             <div class="info-item">

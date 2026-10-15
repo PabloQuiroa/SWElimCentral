@@ -222,10 +222,10 @@
 <div class="page-header">
     <div>
         <p class="page-header-titulo">
-            <i class="bi bi-people-fill me-2"></i>Gesti&oacute;n de Miembros
+            <i class="bi bi-people-fill me-2"></i>Gestión de Miembros
         </p>
         <small style="color: var(--dorado-claro); font-size: 12px;">
-            Registro y administraci&oacute;n de miembros de la congregaci&oacute;n
+            Registro y administración de miembros de la congregación
         </small>
     </div>
     @if (ViewBag.PuedeCrear == true)
@@ -261,7 +261,7 @@
 @* Filtros *@
 <div class="filtros-card">
     <p class="filtros-titulo">
-        <i class="bi bi-funnel-fill me-2"></i>Filtros de B&uacute;squeda
+        <i class="bi bi-funnel-fill me-2"></i>Filtros de Búsqueda
     </p>
     <form method="get" action="/Miembros">
         <div class="row g-3">
@@ -277,7 +277,7 @@
                 <select name="iIdArea"
                         class="form-select"
                         style="border-radius: 8px; font-size: 13px;">
-                    <option value="0">Todas las &aacute;reas</option>
+                    <option value="0">Todas las áreas</option>
                     @foreach (var area in (SelectList)ViewBag.Areas)
                     {
                         <option value="@area.Value"
@@ -335,8 +335,8 @@
                         <th>Foto</th>
                         <th>DPI</th>
                         <th>Nombre Completo</th>
-                        <th>Tel&eacute;fono</th>
-                        <th>&Aacute;rea de Servicio</th>
+                        <th>Teléfono</th>
+                        <th>Área de Servicio</th>
                         <th>Sexo</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -372,7 +372,7 @@
                                 @miembro.sCmp_Segundo_Apellido_Miembro
                             </td>
                             <td>@miembro.sCmp_Telefono_Miembro</td>
-                            <td>@(miembro.Area?.sCmp_Nombre_Area ?? "Sin &aacute;rea")</td>
+                            <td>@(miembro.Area?.sCmp_Nombre_Area ?? "Sin área")</td>
                             <td>
                                 @(miembro.sCmp_Sexo_Miembro == "M" ? "Masculino" : "Femenino")
                             </td>

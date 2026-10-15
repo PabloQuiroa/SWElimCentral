@@ -55,9 +55,12 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
 
             try
             {
-                if (string.IsNullOrEmpty(sNombrePerfil))
+                string? sError = Cls_Validacion_Controlador.PrimerError(
+                    Cls_Validacion_Controlador.ValidarTexto(sNombrePerfil, "nombre del perfil", true, 50),
+                    Cls_Validacion_Controlador.ValidarTexto(sDescripcion, "descripción", false, 200));
+                if (sError != null)
                 {
-                    ViewBag.Error = "El nombre del perfil es obligatorio.";
+                    ViewBag.Error = sError;
                     return View();
                 }
 

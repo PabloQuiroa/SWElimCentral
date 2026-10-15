@@ -1,6 +1,6 @@
 ﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
 @{
-    ViewData["Title"] = "Cambiar Contrase&ntilde;a";
+    ViewData["Title"] = "Cambiar Contraseña";
 }
 
 <style>
@@ -171,10 +171,10 @@
 <div class="page-header">
     <div>
         <p class="page-header-titulo">
-            <i class="bi bi-key-fill me-2"></i>Cambiar Contrase&ntilde;a
+            <i class="bi bi-key-fill me-2"></i>Cambiar Contraseña
         </p>
         <small style="color: var(--dorado-claro); font-size: 12px;">
-            Establezca una nueva contrase&ntilde;a para el usuario
+            Establezca una nueva contraseña para el usuario
         </small>
     </div>
     <a href="/Usuarios" class="btn-regresar">
@@ -189,7 +189,7 @@
         @ViewBag.NombreUsuarioEditar
     </div>
     <div style="font-size: 12px; color: var(--dorado-claro);">
-        Cambiando contrase&ntilde;a de este usuario
+        Cambiando contraseña de este usuario
     </div>
 </div>
 
@@ -208,17 +208,17 @@
 
     <div class="seccion-card">
         <div class="seccion-header">
-            <i class="bi bi-shield-lock-fill"></i> Nueva Contrase&ntilde;a
+            <i class="bi bi-shield-lock-fill"></i> Nueva Contraseña
         </div>
         <div class="seccion-body">
             <div class="mb-3">
-                <label class="form-label">Nueva Contrase&ntilde;a</label>
+                <label class="form-label">Nueva Contraseña</label>
                 <div class="input-group">
                     <input type="password"
                            name="sNuevaContrasena"
                            id="inputNueva"
                            class="form-control"
-                           placeholder="M&iacute;nimo 8 caracteres"
+                           placeholder="Mínimo 8 caracteres"
                            oninput="verificarContrasena(this)"
                            required />
                     <button class="btn btn-outline-secondary"
@@ -229,25 +229,25 @@
                 </div>
                 <div class="requisitos-contrasena">
                     <div class="requisito" id="req-longitud">
-                        <i class="bi bi-x-circle"></i> M&iacute;nimo 8 caracteres
+                        <i class="bi bi-x-circle"></i> Mínimo 8 caracteres
                     </div>
                     <div class="requisito" id="req-mayuscula">
-                        <i class="bi bi-x-circle"></i> Al menos una may&uacute;scula
+                        <i class="bi bi-x-circle"></i> Al menos una mayúscula
                     </div>
                     <div class="requisito" id="req-numero">
-                        <i class="bi bi-x-circle"></i> Al menos un n&uacute;mero
+                        <i class="bi bi-x-circle"></i> Al menos un número
                     </div>
                 </div>
             </div>
 
             <div class="mb-4">
-                <label class="form-label">Confirmar Contrase&ntilde;a</label>
+                <label class="form-label">Confirmar Contraseña</label>
                 <div class="input-group">
                     <input type="password"
                            name="sConfirmarContrasena"
                            id="inputConfirmar"
                            class="form-control"
-                           placeholder="Repita la contrase&ntilde;a"
+                           placeholder="Repita la contraseña"
                            oninput="verificarCoincidencia()"
                            required />
                     <button class="btn btn-outline-secondary"
@@ -267,7 +267,7 @@
                         class="btn-guardar"
                         onclick="return validarFormulario()">
                     <i class="bi bi-check-circle-fill me-2"></i>
-                    Cambiar Contrase&ntilde;a
+                    Cambiar Contraseña
                 </button>
             </div>
         </div>

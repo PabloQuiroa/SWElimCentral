@@ -58,16 +58,20 @@ namespace SistemaWebElimCentral.Controllers.Membresias
 
             try
             {
-                if (string.IsNullOrEmpty(sNombreArea))
+                string? sError = Cls_Validacion_Controlador.PrimerError(
+                    Cls_Validacion_Controlador.ValidarTexto(sNombreArea, "nombre del área", true, 100),
+                    Cls_Validacion_Controlador.ValidarTexto(sDescripcion, "descripción", false, 200),
+                    Cls_Validacion_Controlador.ValidarNombre(sLider, "líder", false, 100));
+                if (sError != null)
                 {
-                    ViewBag.Error = "El nombre del &aacute;rea es obligatorio.";
+                    ViewBag.Error = sError;
                     return View();
                 }
 
                 if (_context.AreasServicio.Any(a =>
                     a.sCmp_Nombre_Area.ToLower() == sNombreArea.ToLower()))
                 {
-                    ViewBag.Error = "Ya existe un &aacute;rea con ese nombre.";
+                    ViewBag.Error = "Ya existe un área con ese nombre.";
                     return View();
                 }
 
@@ -90,12 +94,12 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                     "Creacion de area de servicio: " + sNombreArea,
                     true);
 
-                TempData["Exito"] = "&Aacute;rea creada exitosamente.";
+                TempData["Exito"] = "Área creada exitosamente.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                ViewBag.Error = "Error al crear el &aacute;rea: " + ex.Message;
+                ViewBag.Error = "Error al crear el área: " + ex.Message;
                 return View();
             }
         }
@@ -127,6 +131,16 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 if (gArea == null)
                     return NotFound();
 
+                string? sError = Cls_Validacion_Controlador.PrimerError(
+                    Cls_Validacion_Controlador.ValidarTexto(sNombreArea, "nombre del área", true, 100),
+                    Cls_Validacion_Controlador.ValidarTexto(sDescripcion, "descripción", false, 200),
+                    Cls_Validacion_Controlador.ValidarNombre(sLider, "líder", false, 100));
+                if (sError != null)
+                {
+                    ViewBag.Error = sError;
+                    return View(gArea);
+                }
+
                 gArea.sCmp_Nombre_Area = sNombreArea.Trim();
                 gArea.sCmp_Descripcion_Area = sDescripcion?.Trim();
                 gArea.sCmp_Lider_Area = sLider?.Trim();
@@ -140,13 +154,13 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                     "Edicion de area de servicio: " + sNombreArea,
                     true);
 
-                TempData["Exito"] = "&Aacute;rea actualizada exitosamente.";
+                TempData["Exito"] = "Área actualizada exitosamente.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 ViewBag.Error = "Error al actualizar: " + ex.Message;
-                return View();
+                return View(_context.AreasServicio.Find(iIdArea));
             }
         }
 
@@ -172,8 +186,8 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                     " de area de servicio: " + gArea.sCmp_Nombre_Area);
 
             TempData["Exito"] = gArea.bCmp_Estado_Area
-                ? "&Aacute;rea activada exitosamente."
-                : "&Aacute;rea desactivada exitosamente.";
+                ? "Área activada exitosamente."
+                : "Área desactivada exitosamente.";
 
             return RedirectToAction("Index");
         }
