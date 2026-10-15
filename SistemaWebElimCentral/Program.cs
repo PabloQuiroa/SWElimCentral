@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaWebElimCentral.Models;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,15 @@ builder.Services.AddSession(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Para que el sistema reciba la IP real del usuario cuando está detrás de Nginx
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
