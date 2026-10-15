@@ -53,11 +53,21 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 .Where(m => m.bCmp_Estado_Miembro == true)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(sBuscar))
-                gMiembros = gMiembros.Where(m =>
-                    m.sCmp_Primer_Nombre_Miembro.Contains(sBuscar) ||
-                    m.sCmp_Primer_Apellido_Miembro.Contains(sBuscar) ||
-                    m.sPk_Dpi_Miembro.Contains(sBuscar));
+            // Búsqueda por palabras: cada palabra escrita debe aparecer
+            // en algún nombre, apellido o en el DPI (sin importar el orden)
+            if (!string.IsNullOrWhiteSpace(sBuscar))
+            {
+                foreach (var sPalabra in sBuscar.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string sP = sPalabra;
+                    gMiembros = gMiembros.Where(m =>
+                        m.sPk_Dpi_Miembro.Contains(sP) ||
+                        m.sCmp_Primer_Nombre_Miembro.Contains(sP) ||
+                        (m.sCmp_Segundo_Nombre_Miembro != null && m.sCmp_Segundo_Nombre_Miembro.Contains(sP)) ||
+                        m.sCmp_Primer_Apellido_Miembro.Contains(sP) ||
+                        (m.sCmp_Segundo_Apellido_Miembro != null && m.sCmp_Segundo_Apellido_Miembro.Contains(sP)));
+                }
+            }
 
             if (iIdArea > 0)
                 gMiembros = gMiembros.Where(m => m.iFk_Id_Area == iIdArea);

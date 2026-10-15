@@ -73,9 +73,16 @@ namespace SistemaWebElimCentral.Controllers.Membresias
 
             var gGrupos = _context.GruposFamiliares.AsQueryable();
 
-            if (!string.IsNullOrEmpty(sBuscar))
-                gGrupos = gGrupos.Where(g => g.sCmp_Nombre_Familia != null &&
-                                             g.sCmp_Nombre_Familia.Contains(sBuscar));
+            // Búsqueda por palabras: cada palabra escrita debe aparecer en el nombre de la familia
+            if (!string.IsNullOrWhiteSpace(sBuscar))
+            {
+                foreach (var sPalabra in sBuscar.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    string sP = sPalabra;
+                    gGrupos = gGrupos.Where(g => g.sCmp_Nombre_Familia != null &&
+                                                 g.sCmp_Nombre_Familia.Contains(sP));
+                }
+            }
 
             var lstGrupos = gGrupos
                 .OrderBy(g => g.sCmp_Nombre_Familia)
