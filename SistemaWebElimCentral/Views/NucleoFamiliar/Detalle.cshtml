@@ -534,8 +534,9 @@
                                maxlength="200" required placeholder="Nombres y apellidos" />
                     </div>
                     <div class="col-md-3">
-                        <label class="mb-1">Fecha de nacimiento</label>
-                        <input type="date" name="dFechaNacimiento" class="form-control"
+                        <label class="mb-1">Fecha de nacimiento *</label>
+                        <input type="date" name="dFechaNacimiento" class="form-control" required
+                               title="Debe ser menor de 18 años"
                                max="@DateTime.Today.ToString("yyyy-MM-dd")"
                                min="@DateTime.Today.AddYears(-18).AddDays(1).ToString("yyyy-MM-dd")" />
                     </div>

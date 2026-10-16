@@ -259,8 +259,17 @@
                                id="inputFoto"
                                accept="image/*"
                                class="form-control"
-                               onchange="previsualizarFoto(this)"
+                               onchange="procesarFotoMiembro(this)"
                                style="font-size: 12px;" />
+                        @* Tomar la foto con la cámara (solo aparece en celulares y tablets) *@
+                        <button type="button" id="btnTomarFoto"
+                                style="width:100%; margin-top:8px; padding:9px; border:none; border-radius:10px;
+                                       background:linear-gradient(135deg, #4A0E6E, #7B2D9E); color:white;
+                                       font-size:13px; font-weight:700;">
+                            <i class="bi bi-camera-fill me-1"></i> Tomar foto con la cámara
+                        </button>
+                        <input type="file" id="inputCamara" accept="image/*" capture="environment"
+                               style="display:none;" onchange="procesarFotoMiembro(this)" />
                         <small class="text-muted text-center" style="font-size: 11px;">
                             Deje vacío para mantener la foto actual
                         </small>
@@ -323,6 +332,9 @@
                                    name="dCmp_Fecha_Nacimiento_Miembro"
                                    class="form-control"
                                    value="@Model.dCmp_Fecha_Nacimiento_Miembro.ToString("yyyy-MM-dd")"
+                                   min="1900-01-01"
+                                   max="@DateTime.Today.AddYears(-18).ToString("yyyy-MM-dd")"
+                                   title="El miembro debe ser mayor de edad"
                                    required />
                         </div>
                         <div class="col-md-4">
@@ -481,6 +493,7 @@
 </form>
 
 @section Scripts {
+    <script src="~/js/foto-miembro.js" asp-append-version="true"></script>
     <script>
         function previsualizarFoto(input) {
             if (input.files && input.files[0]) {

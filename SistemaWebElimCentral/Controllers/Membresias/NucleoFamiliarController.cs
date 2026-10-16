@@ -446,6 +446,12 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 return RedirectToAction("Detalle", new { id = iIdGrupo });
             }
 
+            if (!dFechaNacimiento.HasValue)
+            {
+                TempData["Error"] = "La fecha de nacimiento del hijo es obligatoria.";
+                return RedirectToAction("Detalle", new { id = iIdGrupo });
+            }
+
             if (dFechaNacimiento.HasValue)
             {
                 if (dFechaNacimiento.Value.Date > DateTime.Today)

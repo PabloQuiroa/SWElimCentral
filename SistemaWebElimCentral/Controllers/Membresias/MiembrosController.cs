@@ -380,6 +380,8 @@ namespace SistemaWebElimCentral.Controllers.Membresias
                 Cls_Validacion_Controlador.ValidarTexto(gMiembro.sCmp_Privilegio_Miembro, "privilegio", false, 100),
                 // Fechas: nacimiento entre 1900 y hoy; las demás, entre el nacimiento y hoy
                 Cls_Validacion_Controlador.ValidarFecha(dNacimiento, "fecha de nacimiento", true),
+                Cls_Validacion_Controlador.ValidarEdadMinima(dNacimiento, 18,
+                    "El miembro debe ser mayor de edad (18 años o más). Los menores se registran como hijos dentro de su núcleo familiar."),
                 Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Conversion_Miembro, "fecha de conversión", false, dNacimiento),
                 Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Bautismo_Agua_Miembro, "fecha de bautismo en agua", false, dNacimiento),
                 Cls_Validacion_Controlador.ValidarFecha(gMiembro.dCmp_Fecha_Bautismo_Espiritu_Miembro, "fecha de bautismo en el Espíritu", false, dNacimiento),

@@ -1,8 +1,6 @@
 ﻿@* Pablo José Quiroa Martínez - 0901-22-2929 *@
-@using SistemaWebElimCentral.Models.Membresias
 @{
-    ViewData["Title"] = "Dashboard";
-    var lstUltimasConstancias = ViewBag.UltimasConstancias as List<Mdl_Constancia> ?? new List<Mdl_Constancia>();
+    ViewData["Title"] = "Inicio";
 }
 
 <style>
@@ -370,8 +368,67 @@
         .link-ver-todas:hover {
             color: white;
         }
-</style>
 
+    /* ================================
+               TARJETAS CLICABLES
+            ================================ */
+    a.stat-link {
+        display: block;
+        text-decoration: none;
+        height: 100%;
+    }
+
+        a.stat-link .stat-card {
+            cursor: pointer;
+        }
+
+    .stat-ir {
+        position: absolute;
+        right: 20px;
+        bottom: 18px;
+        font-size: 11px;
+        font-weight: 700;
+        opacity: 0.75;
+        transition: all 0.3s;
+    }
+
+    a.stat-link:hover .stat-ir {
+        opacity: 1;
+        transform: translateX(3px);
+    }
+
+    /* ================================
+               FILTRO POR AÑO
+            ================================ */
+    .filtro-anio {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+        .filtro-anio label {
+            color: var(--dorado-claro);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .filtro-anio select {
+            border-radius: 10px;
+            border: 2px solid var(--dorado);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--morado-oscuro);
+            padding: 6px 12px;
+            min-width: 170px;
+            cursor: pointer;
+        }
+</style>
 
 @* Encabezado del Dashboard *@
 <div class="dashboard-header">
@@ -385,398 +442,104 @@
     </div>
 </div>
 
-@* Tarjetas de estadísticas *@
+@* Tarjetas de resumen: al hacer clic llevan a cada módulo *@
 <div class="row g-4 mb-4">
 
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card stat-card-morado">
-            <i class="bi bi-people-fill stat-icono"></i>
-            <div class="stat-numero">@ViewBag.TotalMiembros</div>
-            <div class="stat-label">Total de Miembros</div>
-            <div class="stat-detalle">Miembros activos registrados</div>
-        </div>
+        <a href="/Miembros" class="stat-link" title="Ir a Total de Miembros">
+            <div class="stat-card stat-card-morado">
+                <i class="bi bi-people-fill stat-icono"></i>
+                <div class="stat-numero">@ViewBag.TotalMiembros</div>
+                <div class="stat-label">Total de Miembros</div>
+                <div class="stat-detalle">Miembros activos registrados</div>
+                <span class="stat-ir">Ver <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card stat-card-dorado">
-            <i class="bi bi-house-heart-fill stat-icono"></i>
-            <div class="stat-numero">@ViewBag.TotalFamilias</div>
-            <div class="stat-label">Grupos Familiares</div>
-            <div class="stat-detalle">Familias registradas</div>
-        </div>
+        <a href="/NucleoFamiliar" class="stat-link" title="Ir a Grupos Familiares">
+            <div class="stat-card stat-card-dorado">
+                <i class="bi bi-house-heart-fill stat-icono"></i>
+                <div class="stat-numero">@ViewBag.TotalFamilias</div>
+                <div class="stat-label">Grupos Familiares</div>
+                <div class="stat-detalle">Familias registradas</div>
+                <span class="stat-ir">Ver <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card stat-card-verde">
-            <i class="bi bi-file-earmark-check-fill stat-icono"></i>
-            <div class="stat-numero">@ViewBag.TotalConstancias</div>
-            <div class="stat-label">Constancias Emitidas</div>
-            <div class="stat-detalle">Este mes</div>
-        </div>
+        <a href="/Constancias" class="stat-link" title="Ir a Constancias Emitidas">
+            <div class="stat-card stat-card-verde">
+                <i class="bi bi-file-earmark-check-fill stat-icono"></i>
+                <div class="stat-numero">@ViewBag.TotalConstancias</div>
+                <div class="stat-label">Constancias Emitidas</div>
+                <div class="stat-detalle">Este mes</div>
+                <span class="stat-ir">Ver <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
     <div class="col-xl-3 col-md-6">
-        <div class="stat-card stat-card-gris">
-            <i class="bi bi-diagram-3-fill stat-icono"></i>
-            <div class="stat-numero">@ViewBag.TotalAreas</div>
-            <div class="stat-label">Áreas de Servicio</div>
-            <div class="stat-detalle">Ministerios activos</div>
-        </div>
+        <a href="/Areas" class="stat-link" title="Ir a Áreas de Servicio">
+            <div class="stat-card stat-card-gris">
+                <i class="bi bi-diagram-3-fill stat-icono"></i>
+                <div class="stat-numero">@ViewBag.TotalAreas</div>
+                <div class="stat-label">Áreas de Servicio</div>
+                <div class="stat-detalle">Ministerios activos</div>
+                <span class="stat-ir">Ver <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
     </div>
 
 </div>
 
-
-@* Carrusel de gráficas y accesos rápidos *@
-<div class="row g-4">
-
-    @* Carrusel de gráficas *@
-    <div class="col-lg-8">
-        <div class="content-card">
-            <div class="content-card-header carrusel-header">
-                <div class="carrusel-titulo" id="carruselTitulo">
-                    <i class="bi bi-bar-chart-fill"></i>
-                    <span>Crecimiento de Membresías</span>
-                </div>
-                <div class="carrusel-flechas">
-                    <button type="button" class="btn-flecha" id="btnAnterior" title="Gráfica anterior">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button type="button" class="btn-flecha" id="btnSiguiente" title="Gráfica siguiente">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="content-card-body">
-                <div class="linea-dorada"></div>
-
-                <div class="carrusel-ventana" id="carruselVentana">
-                    <div class="carrusel-pista" id="carruselPista">
-
-                        @* Slide 1: miembros registrados por mes *@
-                        <div class="carrusel-slide"
-                             data-titulo="Crecimiento de Membresías" data-icono="bi-bar-chart-fill">
-                            <div class="slide-descripcion">
-                                Miembros registrados por mes en @DateTime.Now.Year
-                            </div>
-                            <div class="contenedor-grafica">
-                                <canvas id="graficaMiembros"></canvas>
-                            </div>
-                        </div>
-
-                        @* Slide 2: miembros por área de servicio *@
-                        <div class="carrusel-slide"
-                             data-titulo="Miembros por Área de Servicio" data-icono="bi-diagram-3-fill">
-                            <div class="slide-descripcion">
-                                Distribución de los miembros activos en cada área
-                            </div>
-                            @if ((ViewBag.CantidadAreasGrafica ?? 0) > 0)
-                            {
-                                <div class="contenedor-grafica">
-                                    <canvas id="graficaAreas"></canvas>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="sin-datos-dash">No hay miembros activos registrados.</div>
-                            }
-                        </div>
-
-                        @* Slide 3: constancias emitidas por mes *@
-                        <div class="carrusel-slide"
-                             data-titulo="Constancias Emitidas" data-icono="bi-file-earmark-check-fill">
-                            <div class="slide-descripcion">
-                                <strong>@ViewBag.TotalConstanciasAnio</strong>
-                                constancia(s) emitida(s) en @DateTime.Now.Year
-                            </div>
-                            <div class="contenedor-grafica">
-                                <canvas id="graficaConstancias"></canvas>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="carrusel-puntos" id="carruselPuntos">
-                    <button type="button" class="punto activo" data-indice="0">Miembros</button>
-                    <button type="button" class="punto" data-indice="1">Áreas</button>
-                    <button type="button" class="punto" data-indice="2">Constancias</button>
-                </div>
-            </div>
-        </div>
+@* Accesos rápidos *@
+<div class="content-card">
+    <div class="content-card-header">
+        <i class="bi bi-lightning-fill"></i>
+        Accesos Rápidos
     </div>
-
-    @* Accesos rápidos *@
-    <div class="col-lg-4">
-        <div class="content-card">
-            <div class="content-card-header">
-                <i class="bi bi-lightning-fill"></i>
-                Accesos Rápidos
-            </div>
-            <div class="content-card-body">
-                <div class="linea-dorada"></div>
-                <div class="row g-3">
-                    <div class="col-6">
+    <div class="content-card-body">
+        <div class="linea-dorada"></div>
+        <div class="row g-3">
+                    <div class="col-xl-2 col-md-4 col-6">
                         <a href="/Miembros/Crear" class="acceso-rapido">
                             <i class="bi bi-person-plus-fill"></i>
                             <span>Nuevo Miembro</span>
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-xl-2 col-md-4 col-6">
                         <a href="/Constancias/Generar" class="acceso-rapido">
                             <i class="bi bi-file-earmark-plus-fill"></i>
                             <span>Nueva Constancia</span>
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-xl-2 col-md-4 col-6">
                         <a href="/Miembros" class="acceso-rapido">
                             <i class="bi bi-search"></i>
                             <span>Buscar Miembro</span>
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-xl-2 col-md-4 col-6">
                         <a href="/Bitacora" class="acceso-rapido">
                             <i class="bi bi-journal-text"></i>
                             <span>Ver Bitácora</span>
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-xl-2 col-md-4 col-6">
                         <a href="/NucleoFamiliar/Crear" class="acceso-rapido">
                             <i class="bi bi-house-add-fill"></i>
                             <span>Nueva Familia</span>
                         </a>
                     </div>
-                    <div class="col-6">
+                    <div class="col-xl-2 col-md-4 col-6">
                         <a href="/NucleoFamiliar" class="acceso-rapido">
                             <i class="bi bi-house-heart-fill"></i>
                             <span>Ver Familias</span>
                         </a>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-@* Historial de últimas constancias *@
-<div class="row g-4 mt-1">
-    <div class="col-12">
-        <div class="content-card">
-            <div class="content-card-header">
-                <i class="bi bi-clock-history"></i>
-                Últimas Constancias Emitidas
-                <a href="/Constancias" class="link-ver-todas">
-                    Ver todas <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
-            <div class="content-card-body">
-                <div class="linea-dorada"></div>
-                @if (lstUltimasConstancias.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="tabla-historial table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Miembro</th>
-                                    <th>DPI</th>
-                                    <th>Tipo</th>
-                                    <th>Emitida por</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var gConstancia in lstUltimasConstancias)
-                                {
-                                    <tr>
-                                        <td>@gConstancia.dCmp_Fecha_Emision_Constancia.ToString("dd/MM/yyyy HH:mm")</td>
-                                        <td>
-                                            <strong style="color: var(--morado-oscuro);">
-                                                @(gConstancia.Miembro != null
-                                                    ? gConstancia.Miembro.sCmp_Primer_Nombre_Miembro + " " + gConstancia.Miembro.sCmp_Primer_Apellido_Miembro
-                                                    : "-")
-                                            </strong>
-                                        </td>
-                                        <td>@gConstancia.sFk_Dpi_Miembro</td>
-                                        <td>@gConstancia.sCmp_Tipo_Constancia</td>
-                                        <td>@(gConstancia.Usuario?.sCmp_Nombre_Usuario ?? "-")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="sin-datos-dash" style="padding: 30px;">Todavía no se han emitido constancias.</div>
-                }
-            </div>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // ================================
-        // CONFIGURACIÓN COMÚN DE LAS GRÁFICAS
-        // ================================
-        const sMorado = 'rgba(74, 14, 110, 0.7)';
-        const sMoradoMedio = 'rgba(123, 45, 158, 0.75)';
-        const sVerde = 'rgba(74, 103, 65, 0.75)';
-        const sDorado = '#C9A84C';
-        const lstMeses = @Html.Raw(ViewBag.MesesLabels ?? "['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']");
-
-        function fun_OpcionesBarras(sUnidad, bHorizontal) {
-            const ejeValor = {
-                beginAtZero: true,
-                ticks: { stepSize: 1, precision: 0 },
-                grid: { color: 'rgba(0,0,0,0.05)' }
-            };
-            const ejeCategoria = { grid: { display: false } };
-            return {
-                indexAxis: bHorizontal ? 'y' : 'x',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(c) {
-                                return ' ' + (bHorizontal ? c.parsed.x : c.parsed.y) + ' ' + sUnidad;
-                            }
-                        }
-                    }
-                },
-                scales: bHorizontal
-                    ? { x: ejeValor, y: ejeCategoria }
-                    : { y: ejeValor, x: ejeCategoria }
-            };
-        }
-
-        const lstGraficas = [];
-
-        // Slide 1: miembros registrados por mes
-        lstGraficas.push(new Chart(document.getElementById('graficaMiembros'), {
-            type: 'bar',
-            data: {
-                labels: lstMeses,
-                datasets: [{
-                    label: 'Miembros registrados',
-                    data: @Html.Raw(ViewBag.MesesData ?? "[0,0,0,0,0,0,0,0,0,0,0,0]"),
-                    backgroundColor: sMorado,
-                    borderColor: sDorado,
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: fun_OpcionesBarras('miembro(s)', false)
-        }));
-
-        // Slide 2: miembros por área de servicio
-        const canvasAreas = document.getElementById('graficaAreas');
-        lstGraficas.push(canvasAreas ? new Chart(canvasAreas, {
-            type: 'bar',
-            data: {
-                labels: @Html.Raw(ViewBag.AreasLabels ?? "[]"),
-                datasets: [{
-                    label: 'Miembros',
-                    data: @Html.Raw(ViewBag.AreasData ?? "[]"),
-                    backgroundColor: sMoradoMedio,
-                    borderColor: sDorado,
-                    borderWidth: 2,
-                    borderRadius: 6,
-                    maxBarThickness: 22
-                }]
-            },
-            options: fun_OpcionesBarras('miembro(s)', true)
-        }) : null);
-
-        // Slide 3: constancias emitidas por mes
-        lstGraficas.push(new Chart(document.getElementById('graficaConstancias'), {
-            type: 'bar',
-            data: {
-                labels: lstMeses,
-                datasets: [{
-                    label: 'Constancias emitidas',
-                    data: @Html.Raw(ViewBag.ConstanciasData ?? "[0,0,0,0,0,0,0,0,0,0,0,0]"),
-                    backgroundColor: sVerde,
-                    borderColor: sDorado,
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: fun_OpcionesBarras('constancia(s)', false)
-        }));
-
-        // ================================
-        // CARRUSEL DE GRÁFICAS
-        // ================================
-        (function() {
-            const pista = document.getElementById('carruselPista');
-            const ventana = document.getElementById('carruselVentana');
-            const lstSlides = pista.querySelectorAll('.carrusel-slide');
-            const lstPuntos = document.querySelectorAll('#carruselPuntos .punto');
-            const divTitulo = document.getElementById('carruselTitulo');
-            let iActual = 0;
-
-            function fun_Mostrar(iIndice) {
-                const iTotal = lstSlides.length;
-                iActual = (iIndice + iTotal) % iTotal;   // da la vuelta al llegar al final
-
-                pista.style.transform = 'translateX(-' + (iActual * 100) + '%)';
-
-                lstPuntos.forEach(function(p, i) {
-                    p.classList.toggle('activo', i === iActual);
-                });
-
-                // Cambia el título del encabezado con un pequeño desvanecido
-                const slide = lstSlides[iActual];
-                divTitulo.style.opacity = 0;
-                setTimeout(function() {
-                    divTitulo.innerHTML = '';
-                    const icono = document.createElement('i');
-                    icono.className = 'bi ' + slide.dataset.icono;
-                    const texto = document.createElement('span');
-                    texto.textContent = slide.dataset.titulo;
-                    divTitulo.appendChild(icono);
-                    divTitulo.appendChild(texto);
-                    divTitulo.style.opacity = 1;
-                }, 200);
-
-                // Vuelve a animar la gráfica que entra
-                const grafica = lstGraficas[iActual];
-                if (grafica) {
-                    setTimeout(function() {
-                        grafica.reset();
-                        grafica.update();
-                    }, 250);
-                }
-            }
-
-            document.getElementById('btnAnterior').addEventListener('click', function() { fun_Mostrar(iActual - 1); });
-            document.getElementById('btnSiguiente').addEventListener('click', function() { fun_Mostrar(iActual + 1); });
-
-            lstPuntos.forEach(function(p) {
-                p.addEventListener('click', function() { fun_Mostrar(parseInt(p.dataset.indice)); });
-            });
-
-            // Flechas del teclado
-            document.addEventListener('keydown', function(e) {
-                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
-                if (e.key === 'ArrowLeft') fun_Mostrar(iActual - 1);
-                if (e.key === 'ArrowRight') fun_Mostrar(iActual + 1);
-            });
-
-            // Deslizar con el dedo en celular o tablet
-            let iInicioX = null;
-            ventana.addEventListener('touchstart', function(e) { iInicioX = e.touches[0].clientX; }, { passive: true });
-            ventana.addEventListener('touchend', function(e) {
-                if (iInicioX === null) return;
-                const iDiferencia = e.changedTouches[0].clientX - iInicioX;
-                if (Math.abs(iDiferencia) > 50) fun_Mostrar(iActual + (iDiferencia < 0 ? 1 : -1));
-                iInicioX = null;
-            }, { passive: true });
-        })();
-    </script>
-}

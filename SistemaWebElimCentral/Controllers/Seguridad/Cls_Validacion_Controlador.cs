@@ -1,4 +1,4 @@
-// Pablo José Quiroa Martínez - 0901-22-2929
+﻿// Pablo José Quiroa Martínez - 0901-22-2929
 using System;
 using System.Text.RegularExpressions;
 
@@ -25,9 +25,10 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
         private static readonly Regex rUsuario =
             new Regex(@"^[A-Za-z0-9._-]+$", RegexOptions.Compiled);
 
-        // Correo electrónico básico
+        // Correo electrónico: acepta cualquier dominio válido, incluidos
+        // los institucionales con varios puntos (ej. usuario@miumg.edu.gt)
         private static readonly Regex rCorreo =
-            new Regex(@"^[^@\s<>]+@[^@\s<>]+\.[^@\s<>]+$", RegexOptions.Compiled);
+            new Regex(@"^[^@\s<>]+@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$", RegexOptions.Compiled);
 
         // Fecha mínima aceptada en todo el sistema
         public static readonly DateTime dFechaMinima = new DateTime(1900, 1, 1);
@@ -113,6 +114,15 @@ namespace SistemaWebElimCentral.Controllers.Seguridad
                 return $"El campo {sCampo} no puede ser una fecha futura.";
 
             return null;
+        }
+
+        // Valida que la persona tenga al menos la edad indicada a la fecha de hoy
+        public static string? ValidarEdadMinima(DateTime? dNacimiento, int iEdadMinima, string sMensaje)
+        {
+            if (!dNacimiento.HasValue || dNacimiento.Value == DateTime.MinValue)
+                return null;
+
+            return dNacimiento.Value.Date > DateTime.Today.AddYears(-iEdadMinima) ? sMensaje : null;
         }
 
         // Devuelve el primer error encontrado, o null si todos son válidos

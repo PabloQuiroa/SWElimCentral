@@ -252,12 +252,21 @@
                         <input type="file"
                                name="fFoto"
                                id="inputFoto"
-                               accept="image/jpeg, image/png"
+                               accept="image/*"
                                class="form-control"
-                               onchange="previsualizarFoto(this)"
+                               onchange="procesarFotoMiembro(this)"
                                style="font-size: 12px;" />
+                        @* Tomar la foto con la cámara (solo aparece en celulares y tablets) *@
+                        <button type="button" id="btnTomarFoto"
+                                style="width:100%; margin-top:8px; padding:9px; border:none; border-radius:10px;
+                                       background:linear-gradient(135deg, #4A0E6E, #7B2D9E); color:white;
+                                       font-size:13px; font-weight:700;">
+                            <i class="bi bi-camera-fill me-1"></i> Tomar foto con la cámara
+                        </button>
+                        <input type="file" id="inputCamara" accept="image/*" capture="environment"
+                               style="display:none;" onchange="procesarFotoMiembro(this)" />
                         <small class="text-muted text-center" style="font-size: 11px;">
-                            Formatos: JPG, PNG. M&aacute;ximo 5MB
+                            JPG o PNG. La foto se ajusta de tamaño automáticamente.
                         </small>
                     </div>
                 </div>
@@ -343,7 +352,8 @@
                                    name="dCmp_Fecha_Nacimiento_Miembro"
                                    id="inputFechaNacimiento"
                                    class="form-control"
-                                   max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   min="1900-01-01"
+                                   max="@DateTime.Today.AddYears(-18).ToString("yyyy-MM-dd")"
                                    onchange="validarFecha(this)"
                                    required />
                             <span class="campo-info" id="edadCalculada"></span>
@@ -394,7 +404,7 @@
                                    name="sCmp_Correo_Miembro"
                                    id="inputCorreo"
                                    class="form-control"
-                                   placeholder="correo@gmail.com"
+                                   placeholder="correo@gmail.com o correo@miumg.edu.gt"
                                    maxlength="100"
                                    oninput="validarCorreoTiempo(this)"
                                    onblur="validarCorreoFinal(this)" />
@@ -534,6 +544,7 @@
 </form>
 
 @section Scripts {
+    <script src="~/js/foto-miembro.js" asp-append-version="true"></script>
     <script>
         function soloNumeros(input) {
             input.value = input.value.replace(/[^0-9]/g, '');
@@ -556,6 +567,20 @@
             }
         }
 
+        // Edad exacta en años a partir de una fecha "yyyy-MM-dd"
+        function fun_Edad(sFecha) {
+            const p = sFecha.split('-');
+            const nac = new Date(p[0], p[1] - 1, p[2]);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - nac.getFullYear();
+            if (hoy.getMonth() < nac.getMonth() ||
+                (hoy.getMonth() === nac.getMonth() && hoy.getDate() < nac.getDate())) edad--;
+            return edad;
+        }
+
+        // Correo con cualquier dominio válido (gmail, hotmail, institucionales como miumg.edu.gt, etc.)
+        const reCorreo = /^[^@@\s]+@@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/;
+
         function validarFecha(input) {
             const fecha = new Date(input.value);
             const hoy = new Date();
@@ -564,6 +589,10 @@
             if (fecha > hoy) {
                 input.classList.add('is-invalid');
                 span.innerHTML = '<span style="color:red;">La fecha no puede ser futura</span>';
+            } else if (fun_Edad(input.value) < 18) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                span.innerHTML = '<span style="color:red;">Debe ser mayor de edad. Los menores se agregan como hijos en Familias.</span>';
             } else {
                 input.classList.remove('is-invalid');
                 input.classList.add('is-valid');
@@ -578,17 +607,13 @@
                 input.classList.remove('is-invalid', 'is-valid');
                 return;
             }
-            const dominiosPermitidos = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
-            const partes = input.value.split('@@');
-            if (partes.length === 2) {
-                const dominio = partes[1].toLowerCase();
-                if (dominiosPermitidos.indexOf(dominio) !== -1) {
-                    input.classList.remove('is-invalid');
-                    input.classList.add('is-valid');
-                    span.innerHTML = '<span style="color:#198754; font-size:11px;"><i class="bi bi-check-circle"></i> Correo v\u00e1lido</span>';
-                } else {
-                    input.classList.remove('is-valid');
-                }
+            if (reCorreo.test(input.value)) {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                span.innerHTML = '<span style="color:#198754; font-size:11px;"><i class="bi bi-check-circle"></i> Correo v\u00e1lido</span>';
+            } else {
+                input.classList.remove('is-valid');
+                span.innerHTML = '';
             }
         }
 
@@ -599,19 +624,10 @@
                 input.classList.remove('is-invalid', 'is-valid');
                 return;
             }
-            const dominiosPermitidos = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
-            const partes = input.value.split('@@');
-            if (partes.length !== 2 || partes[0] === '' || partes[1] === '') {
+            if (!reCorreo.test(input.value)) {
                 input.classList.add('is-invalid');
                 input.classList.remove('is-valid');
-                span.innerHTML = '<span style="color:red; font-size:11px;"><i class="bi bi-x-circle"></i> Formato inv\u00e1lido</span>';
-                return;
-            }
-            const dominio = partes[1].toLowerCase();
-            if (dominiosPermitidos.indexOf(dominio) === -1) {
-                input.classList.add('is-invalid');
-                input.classList.remove('is-valid');
-                span.innerHTML = '<span style="color:red; font-size:11px;"><i class="bi bi-x-circle"></i> Solo se permiten: gmail, hotmail, outlook, yahoo, icloud</span>';
+                span.innerHTML = '<span style="color:red; font-size:11px;"><i class="bi bi-x-circle"></i> Formato inv\u00e1lido. Ejemplo: nombre@@gmail.com o nombre@@miumg.edu.gt</span>';
             } else {
                 input.classList.remove('is-invalid');
                 input.classList.add('is-valid');
@@ -647,7 +663,7 @@
             const dpi = document.getElementById('inputDpi').value;
             const telefono = document.getElementById('inputTelefono').value;
             const correo = document.getElementById('inputCorreo').value;
-            const dominiosPermitidos = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'icloud.com'];
+            const fechaNac = document.getElementById('inputFechaNacimiento').value;
 
             if (dpi.length !== 13) {
                 alert('El DPI debe tener exactamente 13 d\u00edgitos.');
@@ -661,13 +677,22 @@
                 return false;
             }
 
-            if (correo.length > 0) {
-                const partes = correo.split('@@');
-                if (partes.length !== 2 || dominiosPermitidos.indexOf(partes[1].toLowerCase()) === -1) {
-                    alert('El correo debe ser de un dominio v\u00e1lido: gmail.com, hotmail.com, outlook.com, yahoo.com o icloud.com');
-                    document.getElementById('inputCorreo').focus();
-                    return false;
-                }
+            if (!fechaNac) {
+                alert('La fecha de nacimiento es obligatoria.');
+                document.getElementById('inputFechaNacimiento').focus();
+                return false;
+            }
+
+            if (fun_Edad(fechaNac) < 18) {
+                alert('El miembro debe ser mayor de edad (18 a\u00f1os o m\u00e1s). Los menores se agregan como hijos dentro de su n\u00facleo familiar.');
+                document.getElementById('inputFechaNacimiento').focus();
+                return false;
+            }
+
+            if (correo.length > 0 && !reCorreo.test(correo)) {
+                alert('El correo no tiene un formato v\u00e1lido. Ejemplo: nombre@@gmail.com o nombre@@miumg.edu.gt');
+                document.getElementById('inputCorreo').focus();
+                return false;
             }
 
             return true;
